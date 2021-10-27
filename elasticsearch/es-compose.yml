@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  es-master:
+    image: elasticsearch:7.10.1
+    container_name: es-master
+    restart: always
+    privileged: true
+    environment:
+      - TAKE_FILE_OWNERSHIP=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticsearch/master/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/master/logs:/usr/share/elasticsearch/logs
+      - ./elasticsearch/master/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/ca/elastic-certificates.p12:/usr/share/elasticsearch/config/elastic-certificates.p12
+      - ./esback:/usr/share/elasticsearch/esback
+
+  es-node1:
+    image: elasticsearch:7.10.1
+    container_name: es-node1
+    restart: always
+    privileged: true
+    environment:
+      - TAKE_FILE_OWNERSHIP=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticsearch/node1/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/node1/logs:/usr/share/elasticsearch/logs
+      - ./elasticsearch/node1/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/ca/elastic-certificates.p12:/usr/share/elasticsearch/config/elastic-certificates.p12
+      - ./esback:/usr/share/elasticsearch/esback
+
+  kibana:
+    image: kibana:7.10.1
+    container_name: kibana
+    restart: always
+    volumes:
+      - ./kibana/logs:/usr/share/kibana/logs
+      - ./kibana/config:/usr/share/kibana/config
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es-master
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    privileged: true
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "9200:9200"
+
+

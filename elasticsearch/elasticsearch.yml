@@ -1,0 +1,27 @@
+cluster.name: yasin-app
+network.host: 0.0.0.0
+
+node.name: es-master
+node.master: true
+node.data: true
+bootstrap.memory_lock: true
+cluster.initial_master_nodes: es-master,es-node1
+discovery.seed_hosts: es-master,es-node1
+discovery.zen.minimum_master_nodes: 2
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+
+path.repo: ["/usr/share/elasticsearch/esback"]
+
+thread_pool.index.size: 16
+thread_pool.index.queue_size: 10000
+thread_pool.search.size: 32
+thread_pool.search.queue_size: 10000
+thread_pool.get.size: 16
+thread_pool.get.queue_size: 10000
+thread_pool.bulk.size: 16
+thread_pool.bulk.queue_size: 10000
