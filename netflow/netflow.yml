@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  netflow:
+    image: netflow
+    container_name: netflow
+    restart: always
+    privileged: true
+    volumes:
+      - ./log:/var/log/netflow
+      - /etc/localtime:/etc/localtime:ro
+      #/usr/share/netflow/config/netflow.yaml
+      #/usr/share/netflow/rules
+    entrypoint: netflow -c /usr/share/netflow/config/netflow.yaml -i docker0
+    network_mode: "host"
+
