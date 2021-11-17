@@ -5,9 +5,10 @@ services:
     container_name: redis
     restart: always
     privileged: true
+    environment:
+      - TZ=Asia/Shanghai
     ports:
       - "6379:6379"
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
-      - /etc/localtime:/etc/localtime:ro
     command: redis-server /etc/redis/redis.conf
