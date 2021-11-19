@@ -2,6 +2,7 @@ version: "3"
 
 #:ro容器对卷只读,:rw容器对卷可读写,默认是可读写,容器之间可以通过容器名作为host相互通信
 services:
+
   es-master:
     image: elasticsearch:7.10.1
     container_name: es-master
@@ -51,7 +52,7 @@ services:
       - TZ=Asia/Shanghai
     volumes:
       - ./kibana/logs:/usr/share/kibana/logs
-      - ./kibana/config:/usr/share/kibana/config
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - "5601:5601"
     depends_on:
