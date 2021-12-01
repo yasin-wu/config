@@ -24,11 +24,11 @@ if [ ! -n "$dir" ] ;then
   exit
 fi
 echo "deploy start......"
-sshpass -p "${password}" scp center.tar center-web.tar "${user}"@"${host}":"${dir}"
+sshpass -p "${password}" scp centos.tar centos-web.tar "${user}"@"${host}":"${dir}"
 sshpass -p "${password}" ssh -Tq "${user}"@"${host}" <<remotessh
 cd ${dir}
-docker load -i center.tar
-docker load -i center-web.tar
+docker load -i centos.tar
+docker load -i centos-web.tar
 topcwpp up
 exit
 remotessh
