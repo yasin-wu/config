@@ -1,0 +1,22 @@
+stages:
+  - build
+  - deploy
+
+build:
+   stage: build
+   script:
+     - cd ${CI_PROJECT_DIR}
+     - sh build.sh
+     - sh build-manager.sh
+   only:
+     - cwpp
+
+deploy:
+  stage: deploy
+  script:
+    - cd ${CI_PROJECT_DIR}
+    - rm -rf *.tar
+    - sudo docker save docker-hub.cloud.top/srp-av/center:2.0.0 -o center.tar
+    - sudo docker save docker-hub.cloud.top/srp-av/center-web:2.0.0 -o center-web.tar
+    - sudo chmod 777 *.tar
+    - sh deploy.sh 10.34.5.38 root topsec518! /usr/local/work/yasin
