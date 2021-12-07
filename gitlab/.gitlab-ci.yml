@@ -7,16 +7,14 @@ build:
    script:
      - cd ${CI_PROJECT_DIR}
      - sh build.sh
-     - sh build-manager.sh
    only:
      - cwpp
+   artifacts:
+     paths:
+       - ./dist.tar.gz
 
 deploy:
   stage: deploy
   script:
     - cd ${CI_PROJECT_DIR}
-    - rm -rf *.tar
-    - sudo docker save centos:2.0.0 -o centos.tar
-    - sudo docker save centos-web:2.0.0 -o centos-web.tar
-    - sudo chmod 777 *.tar
     - sh deploy.sh 127.0.0.1 root root123 /home/work
