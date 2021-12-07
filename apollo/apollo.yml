@@ -13,6 +13,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/ApolloConfigDB?characterEncoding=utf8&serverTimezone=Asia/Shanghai
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
   apollo-adminservice:
     image: apolloconfig/apollo-adminservice
@@ -29,6 +31,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_SERVICE_URL=http://apollo-configservice:8080/eureka/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
   apollo-portal:
     image: apolloconfig/apollo-portal
@@ -46,3 +50,5 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - APOLLO_PORTAL_ENVS=dev
       - DEV_META=http://apollo-configservice:8080
+    volumes:
+      - /etc/localtime:/etc/localtime:ro

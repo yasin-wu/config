@@ -22,6 +22,7 @@ services:
       - ./elasticsearch/master/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch/ca/elastic-certificates.p12:/usr/share/elasticsearch/config/elastic-certificates.p12
       - ./esback:/usr/share/elasticsearch/esback
+      - /etc/localtime:/etc/localtime:ro
 
   es-node1:
     image: elasticsearch:7.10.1
@@ -42,32 +43,33 @@ services:
       - ./elasticsearch/node1/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch/ca/elastic-certificates.p12:/usr/share/elasticsearch/config/elastic-certificates.p12
       - ./esback:/usr/share/elasticsearch/esback
+      - /etc/localtime:/etc/localtime:ro
 
   kibana:
     image: kibana:7.10.1
     container_name: kibana
     restart: always
     privileged: true
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es-master
     environment:
       - TZ=Asia/Shanghai
     volumes:
       - ./kibana/logs:/usr/share/kibana/logs
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    ports:
-      - "5601:5601"
-    depends_on:
-      - es-master
+      - /etc/localtime:/etc/localtime:ro
 
   nginx:
     image: nginx:latest
     container_name: nginx
     restart: always
     privileged: true
+    ports:
+      - "9200:9200"
     environment:
       - TZ=Asia/Shanghai
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - "9200:9200"
-
-
+      - /etc/localtime:/etc/localtime:ro

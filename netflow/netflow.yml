@@ -10,6 +10,7 @@ services:
       - TZ=Asia/Shanghai
     volumes:
       - ./log:/var/log/netflow
+      - /etc/localtime:/etc/localtime:ro
       #/usr/share/netflow/config/netflow.yaml
       #/usr/share/netflow/rules
     entrypoint: netflow -c /usr/share/netflow/config/netflow.yaml -i docker0
