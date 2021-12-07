@@ -8,7 +8,7 @@ build:
      - cd ${CI_PROJECT_DIR}
      - sh build.sh
    only:
-     - cwpp
+     - test
    #产物
    artifacts:
      paths:
