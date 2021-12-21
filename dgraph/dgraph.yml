@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+
+  dgraph-zero:
+    image: dgraph/dgraph:latest
+    container_name: dgraph-zero
+    restart: on-failure
+    privileged: true
+    command: dgraph zero --my=dgraph-zero:5080
+    ports:
+      - "5080:5080"
+      - "6080:6080"
+    volumes:
+      - ./dgraph:/dgraph
+
+  dgraph-alpha:
+    image: dgraph/dgraph:latest
+    container_name: dgraph-alpha
+    restart: on-failure
+    privileged: true
+    command: dgraph alpha --security "whitelist=10.34.4.250,10.34.16.250" --my=dgraph-alpha:7080 --zero=dgraph-zero:5080
+    ports:
+      - "8080:8080"
+      - "9080:9080"
+    volumes:
+      - ./dgraph:/dgraph
+    depends_on:
+      - dgraph-zero
+
+  dgraph-ratel:
+    image: dgraph/ratel:latest
+    container_name: dgraph-ratel
+    restart: on-failure
+    privileged: true
+    command: dgraph-ratel
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dgraph:/dgraph
+    depends_on:
+      - dgraph-zero
+      - dgraph-server
+
+
