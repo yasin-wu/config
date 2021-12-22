@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./data:/data
+      - /etc/localtime:/etc/localtime:ro
