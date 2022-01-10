@@ -2,9 +2,9 @@ version: "3"
 
 services:
   neo4j:
-    #neo4j:4.1.4-community
-    #neo4j:4.1.4-enterprise
-    image: neo4j:4.1.4-community
+    #neo4j:4.4.2-community
+    #neo4j:4.4.2-enterprise
+    image: neo4j:4.4.2-community
     container_name: neo4j
     restart: always
     privileged: true
@@ -16,5 +16,5 @@ services:
       - "7687:7687"
     volumes:
       - ./data:/data
-      - ./conf:/conf
+      - ./conf:/var/lib/neo4j/conf
       - /etc/localtime:/etc/localtime:ro
