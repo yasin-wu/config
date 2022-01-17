@@ -33,12 +33,14 @@ services:
     privileged: true
     environment:
       - TZ=Asia/Shanghai
+      - DGRAPH_ALPHA_CONFIG=/etc/dgraph/config/config.yml
     command: dgraph alpha --my=dgraph-alpha:7080 --zero=dgraph-zero:5080
     ports:
       - "8080:8080"
       - "9080:9080"
     volumes:
       - ./dgraph:/dgraph
+      - ./config/config.yml:/etc/dgraph/config/config.yml
       - /etc/localtime:/etc/localtime:ro
     extra_hosts:
       - "dgraph-zero:132.131.0.2"
