@@ -1,2 +1,4 @@
 security:
   whitelist: 10.34.16.250
+acl:
+  secret-file: /etc/dgraph/config/hmac_secret_file
