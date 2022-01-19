@@ -16,9 +16,6 @@ services:
     volumes:
       - ./dgraph:/dgraph
       - /etc/localtime:/etc/localtime:ro
-    links:
-      - zero:dgraph-zero
-      - alpha:dgraph-alpha
     extra_hosts:
       - "dgraph-zero:132.131.0.2"
       - "dgraph-alpha:132.131.0.3"
