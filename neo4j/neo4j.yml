@@ -17,4 +17,5 @@ services:
     volumes:
       - ./data:/data
       - ./conf:/var/lib/neo4j/conf
+      - ./logs:/var/lib/neo4j/logs
       - /etc/localtime:/etc/localtime:ro
