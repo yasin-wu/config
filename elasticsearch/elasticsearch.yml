@@ -1,6 +1,5 @@
 version: "3"
 
-#:ro容器对卷只读,:rw容器对卷可读写,默认是可读写,容器之间可以通过容器名作为host相互通信
 services:
 
   es-master:
