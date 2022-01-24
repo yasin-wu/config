@@ -63,6 +63,7 @@ services:
       - setup.kibana.host=kibana:5601
     volumes:
       - ./metricbeat/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - ./metricbeat/modules.d/elasticsearch-xpack.yml:/usr/share/metricbeat/modules.d/elasticsearch-xpack.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
       - /proc:/hostfs/proc:ro

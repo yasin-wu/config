@@ -16,7 +16,6 @@ metricbeat.modules:
       - "diskio"
       - "healthcheck"
       - "info"
-      #- "image"
       - "memory"
       - "network"
     hosts: ["unix:///var/run/docker.sock"]
@@ -27,6 +26,6 @@ processors:
   - add_cloud_metadata: ~
 
 output.elasticsearch:
-  hosts: '${ELASTICSEARCH_HOSTS:nginx:9200}'
-  username: '${ELASTICSEARCH_USERNAME:elastic}'
-  password: '${ELASTICSEARCH_PASSWORD:yasinwu}'
+  hosts: ["http://nginx:9200"]
+  username: "elastic"
+  password: "yasinwu"
