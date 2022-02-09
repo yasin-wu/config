@@ -5,7 +5,7 @@ services:
   es-master:
     image: elasticsearch:7.16.1
     container_name: es-master
-    restart: always
+    restart: unless-stopped
     privileged: true
     environment:
       - TAKE_FILE_OWNERSHIP=true
@@ -30,7 +30,7 @@ services:
   es-node1:
     image: elasticsearch:7.16.1
     container_name: es-node1
-    restart: always
+    restart: unless-stopped
     privileged: true
     environment:
       - TAKE_FILE_OWNERSHIP=true
@@ -55,7 +55,7 @@ services:
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:7.16.1
     container_name: metricbeat
-    restart: always
+    restart: unless-stopped
     privileged: true
     user: root
     environment:
@@ -79,7 +79,7 @@ services:
   kibana:
     image: kibana:7.16.1
     container_name: kibana
-    restart: always
+    restart: unless-stopped
     privileged: true
     ports:
       - "5601:5601"
@@ -101,7 +101,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: always
+    restart: unless-stopped
     privileged: true
     ports:
       - "9200:9200"

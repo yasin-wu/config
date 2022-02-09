@@ -6,7 +6,7 @@ services:
     #neo4j:4.4.2-enterprise
     image: neo4j:4.4.2-community
     container_name: neo4j
-    restart: always
+    restart: unless-stopped
     privileged: true
     environment:
       - TZ=Asia/Shanghai

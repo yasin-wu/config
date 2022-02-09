@@ -4,7 +4,7 @@ services:
   apollo-configservice:
     image: apolloconfig/apollo-configservice
     container_name: apollo-configservice
-    restart: always
+    restart: unless-stopped
     privileged: true
     ports:
       - "8080:8080"
@@ -19,7 +19,7 @@ services:
   apollo-adminservice:
     image: apolloconfig/apollo-adminservice
     container_name: apollo-adminservice
-    restart: always
+    restart: unless-stopped
     privileged: true
     ports:
       - "8090:8090"
@@ -37,7 +37,7 @@ services:
   apollo-portal:
     image: apolloconfig/apollo-portal
     container_name: apollo-portal
-    restart: always
+    restart: unless-stopped
     privileged: true
     ports:
       - "8070:8070"
