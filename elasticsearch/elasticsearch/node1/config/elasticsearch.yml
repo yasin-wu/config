@@ -6,7 +6,6 @@ node.name: es-node1
 bootstrap.memory_lock: true
 cluster.initial_master_nodes: es-master,es-node1
 discovery.seed_hosts: es-master,es-node1
-discovery.zen.minimum_master_nodes: 1
 
 xpack.security.enabled: true
 xpack.security.transport.ssl.enabled: true

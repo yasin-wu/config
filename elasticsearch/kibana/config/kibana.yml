@@ -1,7 +1,7 @@
 server.name: kibana
 server.host: 0.0.0.0
 elasticsearch.hosts: ["http://nginx:9200"]
-elasticsearch.username: elastic
+elasticsearch.username: kibana
 elasticsearch.password: yasinwu
 i18n.locale: zh-CN
 monitoring.kibana.collection.enabled: true

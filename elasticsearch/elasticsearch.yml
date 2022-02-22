@@ -3,7 +3,7 @@ version: "3"
 services:
 
   es-master:
-    image: elasticsearch:7.16.1
+    image: elasticsearch:8.0.0
     container_name: es-master
     restart: unless-stopped
     privileged: true
@@ -28,7 +28,7 @@ services:
         ipv4_address: 132.131.0.2
 
   es-node1:
-    image: elasticsearch:7.16.1
+    image: elasticsearch:8.0.0
     container_name: es-node1
     restart: unless-stopped
     privileged: true
@@ -53,7 +53,7 @@ services:
         ipv4_address: 132.131.0.3
 
   metricbeat:
-    image: docker.elastic.co/beats/metricbeat:7.16.1
+    image: docker.elastic.co/beats/metricbeat:8.0.0
     container_name: metricbeat
     restart: unless-stopped
     privileged: true
@@ -77,7 +77,7 @@ services:
         ipv4_address: 132.131.0.4
 
   kibana:
-    image: kibana:7.16.1
+    image: kibana:8.0.0
     container_name: kibana
     restart: unless-stopped
     privileged: true
