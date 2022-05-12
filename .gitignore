@@ -1,2 +1,4 @@
 .DS_Store
 
+/elasticsearch/elasticsearch/master/data/
+/elasticsearch/elasticsearch/node1/data/

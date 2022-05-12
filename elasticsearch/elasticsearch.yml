@@ -52,29 +52,29 @@ services:
       extnetwork:
         ipv4_address: 132.131.0.3
 
-  metricbeat:
-    image: docker.elastic.co/beats/metricbeat:8.0.0
-    container_name: metricbeat
-    restart: unless-stopped
-    privileged: true
-    user: root
-    environment:
-      - setup.kibana.host=kibana:5601
-    volumes:
-      - ./metricbeat/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
-      - ./metricbeat/modules.d/elasticsearch-xpack.yml:/usr/share/metricbeat/modules.d/elasticsearch-xpack.yml:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-      - /proc:/hostfs/proc:ro
-      - /:/hostfs:ro
-    extra_hosts:
-      - "es-master:132.131.0.2"
-      - "es-node1:132.131.0.3"
-      - "kibana:132.131.0.5"
-      - "nginx:132.131.0.6"
-    networks:
-      extnetwork:
-        ipv4_address: 132.131.0.4
+#  metricbeat:
+#    image: docker.elastic.co/beats/metricbeat:8.0.0
+#    container_name: metricbeat
+#    restart: unless-stopped
+#    privileged: true
+#    user: root
+#    environment:
+#      - setup.kibana.host=kibana:5601
+#    volumes:
+#      - ./metricbeat/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
+#      - ./metricbeat/modules.d/elasticsearch-xpack.yml:/usr/share/metricbeat/modules.d/elasticsearch-xpack.yml:ro
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+#      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+#      - /proc:/hostfs/proc:ro
+#      - /:/hostfs:ro
+#    extra_hosts:
+#      - "es-master:132.131.0.2"
+#      - "es-node1:132.131.0.3"
+#      - "kibana:132.131.0.5"
+#      - "nginx:132.131.0.6"
+#    networks:
+#      extnetwork:
+#        ipv4_address: 132.131.0.4
 
   kibana:
     image: kibana:8.0.0
