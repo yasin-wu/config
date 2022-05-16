@@ -4,7 +4,7 @@ services:
   neo4j:
     #neo4j:4.4.2-community
     #neo4j:4.4.2-enterprise
-    image: neo4j:4.4.2-enterprise
+    image: neo4j:4.4.2-community
     container_name: neo4j
     restart: unless-stopped
     privileged: true
