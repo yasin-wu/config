@@ -1,6 +1,6 @@
 server.name: kibana
 server.host: 0.0.0.0
-elasticsearch.hosts: ["http://nginx:9200"]
+elasticsearch.hosts: ["http://nginx"]
 elasticsearch.username: kibana
 elasticsearch.password: yasinwu
 i18n.locale: zh-CN
