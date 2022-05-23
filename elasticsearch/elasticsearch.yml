@@ -113,7 +113,6 @@ services:
     extra_hosts:
       - "es-master:132.131.0.2"
       - "es-node1:132.131.0.3"
-      - "kibana:132.131.0.5"
     networks:
       extnetwork:
         ipv4_address: 132.131.0.6
