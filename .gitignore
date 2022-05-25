@@ -4,3 +4,5 @@
 /elasticsearch/elasticsearch/node1/data/
 /neo4j/data/
 /neo4j/logs/
+/kafka/kafka/
+/kafka/zookeeper/

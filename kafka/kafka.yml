@@ -4,8 +4,6 @@ services:
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
     container_name: zookeeper
-    ports:
-      - "2181:2181"
     volumes:
       - "./zookeeper:/bitnami"
     environment:
