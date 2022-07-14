@@ -1,5 +1,6 @@
 version: "2"
 
+#### 对应数据文件目录需要UID 1001权限
 services:
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
