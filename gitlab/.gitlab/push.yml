@@ -1,0 +1,8 @@
+push:
+  stage: push
+  only:
+    - develop
+  tags:
+    - yasin
+  script:
+    - sudo docker push yasin/app:${VERSION}

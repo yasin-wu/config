@@ -1,21 +1,19 @@
 stages:
-  - build
-  - deploy
+  - "format"
+  - "build"
+  - "deploy"
+  - "push"
+  - "send_message"
 
-build:
-   stage: build
-   script:
-     - cd ${CI_PROJECT_DIR}
-     - sh build.sh
-   only:
-     - test
-   #产物
-   artifacts:
-     paths:
-       - ./dist.tar.gz
+#环境变量
+variables:
+  VERSION: "1.1.0"
+  NOTIFICATION: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=210172d3-95a9-4a78-acf3-92cd657281f7"
 
-deploy:
-  stage: deploy
-  script:
-    - cd ${CI_PROJECT_DIR}
-    - sh deploy.sh 127.0.0.1 root root123 /home/work
+#文件引入
+include:
+  - local: ".gitlab/format.yml"
+  - local: ".gitlab/build.yml"
+  - local: ".gitlab/deploy.yml"
+  - local: ".gitlab/push.yml"
+  - local: ".gitlab/send_message.yml"

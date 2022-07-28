@@ -1,0 +1,9 @@
+build:
+  stage: build
+  only:
+    - develop
+  tags:
+    - yasin
+  script:
+    - cd ${CI_PROJECT_DIR}/yasin/build
+    - sh build.sh ${VERSION}

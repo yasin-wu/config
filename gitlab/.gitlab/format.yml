@@ -1,0 +1,9 @@
+format:
+  stage: format
+  only:
+    - develop
+  tags:
+    - yasin
+  script:
+    - go mod tidy -v
+    - go fmt $(go list ./... | grep -v /vendor/)

@@ -1,0 +1,45 @@
+failure_send:
+  stage: send_message
+  when: on_failure
+  only:
+    - develop
+  tags:
+    - yasin
+  script:
+    - |
+      curl ${NOTIFICATION} -H 'Content-Type: application/json' \
+         -d '
+         {
+              "msgtype": "markdown",
+              "markdown": {
+                 "content":"'"GitLab CICD运行结果：<font color="RED">FAIL</font> \n
+                  >"项目": <font color="comment">${CI_PROJECT_URL}</font>
+                  >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
+                  >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
+                  >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
+                  >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>"'"
+              }
+        }'
+
+success_send:
+  stage: send_message
+  only:
+    - develop
+  tags:
+    - yasin
+  script:
+    - |
+      curl ${NOTIFICATION} -H 'Content-Type: application/json' \
+         -d '
+         {
+              "msgtype": "markdown",
+              "markdown": {
+                 "content":"'"GitLab CICD运行结果：<font color="GREEN">SUCCESS</font> \n
+                  >"项目": <font color="comment">${CI_PROJECT_URL}</font>
+                  >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
+                  >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
+                  >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
+                  >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>
+                  >"输出镜像": <font color="comment">yasin/app:${VERSION}</font>"'"
+              }
+        }'
