@@ -1,5 +1,6 @@
 stages:
   - "format"
+  - "review_code"
   - "build"
   - "deploy"
   - "push"
@@ -13,6 +14,7 @@ variables:
 #文件引入
 include:
   - local: ".gitlab/format.yml"
+  - local: ".gitlab/golangci_lint.yml"
   - local: ".gitlab/build.yml"
   - local: ".gitlab/deploy.yml"
   - local: ".gitlab/push.yml"
