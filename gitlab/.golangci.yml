@@ -5,8 +5,6 @@ run:
     - test/
 
 linters-settings:
-  golint:
-    min-confidence: 0
   misspell:
     locale: US
 
@@ -31,9 +29,14 @@ linters:
     - errcheck
     - misspell
     - asciicheck
-#    - goimports
-#    - golint
-#    - lll
+    - revive
+    - lll
 
 service:
   golangci-lint-version: 1.44.2 # use the fixed version to not introduce new linters unexpectedly
+
+issues:
+  exclude-rules:
+    - linters:
+        - staticcheck
+      text: 'SA5008: unknown JSON option ("optional"|"default=|"range=|"options=)'
