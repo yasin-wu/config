@@ -40,6 +40,9 @@ success_send:
                   >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
                   >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
                   >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>
+                  >"lint": <font color="comment">lint文件如下:golangci-lint.txt</font>
                   >"输出镜像": <font color="comment">yasin/app:${VERSION}</font>"'"
               }
         }'
+    - sh ${CI_PROJECT_DIR}/server/.gitlab/send.sh
+
