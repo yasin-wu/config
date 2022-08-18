@@ -1,0 +1,27 @@
+unit_test:
+  stage: unit_test
+  allow_failure: true
+  only:
+    - develop
+  tags:
+    - cbb_server
+  before_script:
+    - mkdir -p ut
+  script:
+    - echo `go test -coverpkg=./... -coverprofile=coverage.data -timeout=1200s ./...`
+    - go tool cover -html=coverage.data -o coverage.html
+    - go tool cover -func=coverage.data -o coverage.txt
+    - cat coverage.txt
+    - mv coverage.html ./ut
+  coverage: '/total:+\s+\(statements\)+\s+\d+.\d+%/'
+  artifacts:
+    expire_in: 1d
+    paths:
+      - ut/coverage.html
+      - coverage.txt
+  cache:
+    key: "cbbServer"
+    paths:
+      - ut/coverage.html
+      - coverage.txt
+  retry: 2

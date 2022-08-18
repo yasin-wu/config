@@ -1,6 +1,7 @@
 stages:
   - "format"
   - "review_code"
+  - "unit_test"
   - "build"
   - "deploy"
   - "push"
@@ -15,6 +16,7 @@ variables:
 include:
   - local: ".gitlab/format.yml"
   - local: ".gitlab/golangci_lint.yml"
+  - local: ".gitlab/unit_test.yml"
   - local: ".gitlab/build.yml"
   - local: ".gitlab/deploy.yml"
   - local: ".gitlab/push.yml"
