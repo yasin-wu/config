@@ -1,4 +1,5 @@
 # https://golangci-lint.run/usage/linters/
+# gilangci-lint 1.49.0
 run:
   go: "1.17"
   skip-files:
