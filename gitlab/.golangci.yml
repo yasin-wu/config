@@ -25,8 +25,6 @@ linters:
   enable:
     # 检查http response是否成功关闭
     - bodyclose
-    # 发现未使用的代码
-    - deadcode
     # 检查长函数
     - funlen
     # 检查是否有需要使用const代替的strings类型
@@ -41,8 +39,6 @@ linters:
     - ineffassign
     # 静态检查
     - staticcheck
-    # 检查没有使用的struct的元素项
-    - structcheck
     # 类似编译的前端，解析和检查type
     - typecheck
     # 格式化imports，去掉没有用的import
@@ -59,14 +55,10 @@ linters:
     - rowserrcheck
     # 检查没有使用的go代码，包含没有使用的常量、变量、函数、和类型
     - unused
-    # 检查没有使用的全局的变量和常量
-    - varcheck
     # 检查没有判断err的场景，这些没有检查的场景可能导致致命bug在某些场景
     - errcheck
     # 检查英文单词错误
     - misspell
-    # 检查if语句是否使用的简单的语法
-    # - ifshort
     # 上报没有使用的函数参数
     - unparam
     # 检查深度嵌套的if语句
