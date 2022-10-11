@@ -6,3 +6,4 @@
 /neo4j/logs/
 /kafka/kafka/
 /kafka/zookeeper/
+/mongo/data/
