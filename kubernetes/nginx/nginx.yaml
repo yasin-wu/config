@@ -23,7 +23,8 @@ spec:
 ---
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
+#kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
@@ -31,11 +32,12 @@ metadata:
   name: yasin-nginx
   namespace: yasin-app
 spec:
+  serviceName: "yasin-nginx"
   replicas: 1
   selector:
     matchLabels:
       app: yasin-nginx
-  strategy: {}
+#  strategy: {}
   template:
     metadata:
       creationTimestamp: null
