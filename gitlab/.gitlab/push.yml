@@ -3,7 +3,7 @@ push:
   only:
     - develop
   tags:
-    - yasin
+    - ${RUNNER}
   script:
     - sudo docker push yasin/app:${VERSION}
     - sh .gitlab/rmi_noneimages.sh

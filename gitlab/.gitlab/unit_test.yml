@@ -4,7 +4,7 @@ unit_test:
   only:
     - develop
   tags:
-    - cbb_server
+    - ${RUNNER}
   before_script:
     - mkdir -p ut
   script:
@@ -20,7 +20,7 @@ unit_test:
       - ut/coverage.html
       - coverage.txt
   cache:
-    key: "cbbServer"
+    key: "yasinServer"
     paths:
       - ut/coverage.html
       - coverage.txt

@@ -3,7 +3,7 @@ format:
   only:
     - develop
   tags:
-    - yasin
+    - ${RUNNER}
   script:
     - go mod tidy -v
     - go fmt $(go list ./... | grep -v /vendor/)

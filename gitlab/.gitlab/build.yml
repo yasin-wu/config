@@ -3,7 +3,7 @@ build:
   only:
     - develop
   tags:
-    - yasin
+    - ${RUNNER}
   script:
     - cd ${CI_PROJECT_DIR}/yasin/build
     - sh build.sh ${VERSION}

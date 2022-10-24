@@ -3,6 +3,6 @@ deploy:
   only:
     - develop
   tags:
-    - yasin
+    - ${RUNNER}
   script:
     - yasin start
