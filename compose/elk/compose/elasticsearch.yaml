@@ -1,0 +1,44 @@
+version: "2.1"
+
+services:
+  es-master:
+    image: elasticsearch:${VERSION}
+    container_name: es-master
+    restart: unless-stopped
+    privileged: true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    environment:
+      - TAKE_FILE_OWNERSHIP=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - TZ=${TZ}
+    volumes:
+      - ${DATA_PATH}/elasticsearch/master/data:/usr/share/elasticsearch/data
+      - ${DATA_PATH}/elasticsearch/master/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${DATA_PATH}/elasticsearch/ca/elastic-certificates.p12:/usr/share/elasticsearch/config/elastic-certificates.p12
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - elk_net
+
+  es-node1:
+    image: elasticsearch:${VERSION}
+    container_name: es-node1
+    restart: unless-stopped
+    privileged: true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    environment:
+      - TAKE_FILE_OWNERSHIP=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - TZ=${TZ}
+    volumes:
+      - ${DATA_PATH}/elasticsearch/node1/data:/usr/share/elasticsearch/data
+      - ${DATA_PATH}/elasticsearch/node1/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${DATA_PATH}/elasticsearch/ca/elastic-certificates.p12:/usr/share/elasticsearch/config/elastic-certificates.p12
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - elk_net

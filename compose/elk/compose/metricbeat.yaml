@@ -1,0 +1,20 @@
+version: "2.1"
+
+services:
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:${VERSION}
+    container_name: metricbeat
+    restart: unless-stopped
+    privileged: true
+    user: root
+    environment:
+      - setup.kibana.host=kibana:${KIBANA_PORT}
+    volumes:
+      - ${DATA_PATH}/metricbeat/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - ${DATA_PATH}/metricbeat/modules.d/elasticsearch-xpack.yml:/usr/share/metricbeat/modules.d/elasticsearch-xpack.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+    networks:
+      - elk_net
