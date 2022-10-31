@@ -11,6 +11,7 @@ services:
       - CLICKHOUSE_ADMIN_USER=${CLICKHOUSE_ADMIN_USER}
       - CLICKHOUSE_ADMIN_PASSWORD=${CLICKHOUSE_ADMIN_PASSWORD}
     volumes:
+      - ${CLICKHOUSE_DATA}/config/config.xml:/bitnami/clickhouse/etc/config.xml
       - ${CLICKHOUSE_DATA}/data:/bitnami/clickhouse/data
       - /etc/localtime:/etc/localtime:ro
     ports:
