@@ -1,0 +1,18 @@
+version: "2.1"
+
+services:
+  clickhouse:
+    image: bitnami/clickhouse:22.8.8
+    container_name: clickhouse
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - TZ=${TZ}
+      - CLICKHOUSE_ADMIN_USER=${CLICKHOUSE_ADMIN_USER}
+      - CLICKHOUSE_ADMIN_PASSWORD=${CLICKHOUSE_ADMIN_PASSWORD}
+    volumes:
+      - ${CLICKHOUSE_DATA}/data:/bitnami/clickhouse/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "${CLICKHOUSE_PORT}:9000"
+      - "${CLICKHOUSE_REMOTE_PORT}:8123"

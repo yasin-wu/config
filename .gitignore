@@ -5,3 +5,4 @@
 /compose/mongo/data/
 /compose/elk/elasticsearch/master/data/
 /compose/elk/elasticsearch/node1/data/
+/compose/clickhouse/data/
