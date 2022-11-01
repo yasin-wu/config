@@ -3,12 +3,12 @@ version: "2.1"
 services:
   es-master:
     extends:
-      file: elasticsearch.yaml
+      file: compose/elasticsearch.yaml
       service: es-master
 
   es-node1:
     extends:
-      file: elasticsearch.yaml
+      file: compose/elasticsearch.yaml
       service: es-node1
 
 #  metricbeat:
@@ -21,7 +21,7 @@ services:
 
   kibana:
     extends:
-      file: kibana.yaml
+      file: compose/kibana.yaml
       service: kibana
     depends_on:
       - es-master
@@ -30,7 +30,7 @@ services:
 
   nginx:
     extends:
-      file: nginx.yaml
+      file: compose/nginx.yaml
       service: nginx
     depends_on:
       - es-master

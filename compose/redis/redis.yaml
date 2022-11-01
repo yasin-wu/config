@@ -8,9 +8,9 @@ services:
     privileged: true
     environment:
       - TZ=Asia/Shanghai
-    ports:
-      - "6379:6379"
     volumes:
       - ./conf/redis.conf:/etc/redis/redis.conf
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "6379:6379"
     command: redis-server /etc/redis/redis.conf

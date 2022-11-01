@@ -4,8 +4,6 @@ services:
   netdata:
     image: netdata/netdata:latest
     container_name: netdata
-    ports:
-      - "19999:19999"
     restart: unless-stopped
     cap_add:
       - SYS_PTRACE
@@ -20,3 +18,5 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
+    ports:
+      - "19999:19999"

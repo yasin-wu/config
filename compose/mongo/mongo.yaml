@@ -1,14 +1,11 @@
-version: '3.1'
+version: '2.1'
 
 services:
-
   mongo:
     image: mongo:5.0.5
     container_name: mongo
     restart: unless-stopped
     privileged: true
-    ports:
-      - "27017:27017"
     environment:
       - TZ=Asia/Shanghai
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -16,3 +13,5 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./data:/data/db
+    ports:
+      - "27017:27017"
