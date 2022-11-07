@@ -300,7 +300,28 @@
 
     <!-- Path to data directory, with trailing slash. -->
     <path>/var/lib/clickhouse/</path>
-
+    <storage_configuration>
+        <disks>
+            <hot>
+                <path>/var/lib/clickhouse/hot/</path>
+            </hot>
+            <cold>
+                <path>/var/lib/clickhouse/cold/</path>
+            </cold>
+        </disks>
+        <policies>
+            <ttl>
+                <volumes>
+                    <hot>
+                        <disk>hot</disk>
+                    </hot>
+                    <cold>
+                        <disk>cold</disk>
+                    </cold>
+                </volumes>
+            </ttl>
+        </policies>
+    </storage_configuration>
     <!-- Path to temporary data for processing hard queries. -->
     <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
 
