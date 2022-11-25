@@ -6,4 +6,8 @@ push:
     - ${RUNNER}
   script:
     - sudo docker push yasin/app:${VERSION}
-    - sh .gitlab/rmi_noneimages.sh
+    - |
+      for value in $(sudo docker images | grep none | awk '{print $3}');
+        do
+          sudo docker rmi -f "$value"
+        done
