@@ -8,7 +8,7 @@ unit_test:
   before_script:
     - mkdir -p ut
   script:
-    - echo `go test -coverpkg=./... -coverprofile=coverage.data -timeout=1200s ./...`
+    - go test -coverpkg=./... -coverprofile=coverage.data -timeout=1200s ./...
     - go tool cover -html=coverage.data -o coverage.html
     - go tool cover -func=coverage.data -o coverage.txt
     - cat coverage.txt
