@@ -1,0 +1,16 @@
+version: "2.1"
+
+services:
+  nginx:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger-ui
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+      - SWAGGER_JSON=/foo/user.json
+    volumes:
+      - /home/gitlab-runner/swagger:/foo
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8888:8080"
