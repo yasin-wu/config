@@ -1,4 +1,7 @@
 #!/bin/bash
+# shellcheck disable=SC2206
+# shellcheck disable=SC2068
+# shellcheck disable=SC2059
 set -e
 
 dns="DNS:localhost"
@@ -6,8 +9,6 @@ ip="IP:127.0.0.1"
 days=3650
 dir="./tmp/"
 
-# shellcheck disable=SC2206
-# shellcheck disable=SC2068
 while getopts ":d:i:" opt
 do
     case ${opt} in
@@ -57,21 +58,28 @@ authorityKeyIdentifier = keyid:always,issuer
 basicConstraints       = CA:true
 EOF
 
+####### 自签名CA
 openssl genrsa -out ${dir}ca.key 2048
-
 openssl req -x509 -new -nodes -key ${dir}ca.key -subj "/CN=yasin.com.cn" -days ${days} -out ${dir}ca.crt
 
+####### server certificate
 openssl genrsa -out ${dir}server.key 2048
-
-# shellcheck disable=SC2059
 openssl req -new -sha256 -key ${dir}server.key \
-    -subj "/C=CN/ST=SC/L=CD/O=Yasin/CN=yasin.com.cn" \
+    -subj "/C=CN/ST=ChengDu/L=ChengDu/O=Yasin/CN=yasin.com.cn" \
     -reqexts SAN \
     -config <(cat ${dir}my-openssl.cnf <(printf "\n[SAN]\nsubjectAltName=${dns},${ip}")) \
     -out ${dir}server.csr
-
-# shellcheck disable=SC2059
 openssl x509 -req -days ${days} \
     -in ${dir}server.csr -CA ${dir}ca.crt -CAkey ${dir}ca.key -CAcreateserial \
     -extfile <(printf "subjectAltName=${dns},${ip}") \
     -out ${dir}server.crt
+
+####### client certificate
+openssl genrsa -out ${dir}client.key 2048
+openssl req -new \
+    -subj "/C=CN/ST=ChengDu/L=ChengDu/O=Yasin/CN=yasin.com.cn" \
+    -config ${dir}my-openssl.cnf \
+    -key ${dir}client.key -out ${dir}client.csr
+openssl x509 -req -days ${days} -sha256 \
+    -in ${dir}client.csr -CA ${dir}ca.crt -CAkey ${dir}ca.key -CAcreateserial \
+    -out ${dir}client.crt
