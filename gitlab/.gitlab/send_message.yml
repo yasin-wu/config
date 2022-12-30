@@ -10,15 +10,15 @@ failure_send:
       curl ${NOTIFICATION} -H 'Content-Type: application/json' \
          -d '
          {
-              "msgtype": "markdown",
-              "markdown": {
-                 "content":"'"GitLab CICD运行结果：<font color="RED">FAIL</font> \n
-                  >"项目": <font color="comment">${CI_PROJECT_URL}</font>
-                  >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
-                  >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
-                  >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
-                  >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>"'"
-              }
+            "msgtype": "markdown",
+            "markdown": {
+               "content":"'"GitLab CICD运行结果：<font color="RED">FAIL</font> \n
+                >"项目": <font color="comment">${CI_PROJECT_URL}</font>
+                >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
+                >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
+                >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
+                >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>"'"
+            }
         }'
 
 success_send:
@@ -32,17 +32,31 @@ success_send:
       curl ${NOTIFICATION} -H 'Content-Type: application/json' \
          -d '
          {
-              "msgtype": "markdown",
-              "markdown": {
-                 "content":"'"GitLab CICD运行结果：<font color="GREEN">SUCCESS</font> \n
-                  >"项目": <font color="comment">${CI_PROJECT_URL}</font>
-                  >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
-                  >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
-                  >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
-                  >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>
-                  >"lint": <font color="comment">lint文件如下:golangci-lint.txt</font>
-                  >"输出镜像": <font color="comment">yasin/app:${VERSION}</font>"'"
-              }
+            "msgtype": "markdown",
+            "markdown": {
+               "content":"'"GitLab CICD运行结果：<font color="GREEN">SUCCESS</font> \n
+                >"项目": <font color="comment">${CI_PROJECT_URL}</font>
+                >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
+                >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
+                >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
+                >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>
+                >"lint": <font color="comment">lint文件如下:golangci-lint.txt</font>
+                >"输出镜像": <font color="comment">yasin/app:${VERSION}</font>"'"
+            }
         }'
-    - sh ${CI_PROJECT_DIR}/server/.gitlab/send.sh
+    - |
+      webhook="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=bff7dbe3-3467-3854-9324-c8a4a19b4b7c"
+      file_name="golangci-lint.txt"
+      file_dir=${CI_PROJECT_DIR}
+      msg () {
+        key=$(echo "${webhook}" | awk -F = '{print $2}')
+        if test -s "${file_dir}"; then
+          file_id=`curl -s -F media=@${file_name} "https://qyapi.weixin.qq.com/cgi-bin/webhook/upload_media?key=${key}&type=file" |awk 'END{print}'|awk  -F '"'  '{print $14}'`
+        else
+          echo "未检测到文件,脚本退出"
+          exit 1
+        fi
+        curl "${webhook}" -H 'Content-Type: application/json' -d '{"msgtype": "file","file": {"media_id": "'"${file_id}"'"}}'  
+      }
+      msg
 
