@@ -1,6 +1,7 @@
 stages:
   - "format"
   - "review_code"
+  - "qodana"
   - "unit_test"
   - "build"
   - "deploy"
@@ -17,6 +18,7 @@ variables:
 include:
   - local: ".gitlab/format.yml"
   - local: ".gitlab/golangci_lint.yml"
+  - local: ".gitlab/qodana.yml"
   - local: ".gitlab/unit_test.yml"
   - local: ".gitlab/build.yml"
   - local: ".gitlab/deploy.yml"
