@@ -1,4 +1,4 @@
-golangci_lint:
+review_code:
   stage: review_code
   allow_failure: true
   only:
