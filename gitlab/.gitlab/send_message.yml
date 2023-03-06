@@ -45,9 +45,9 @@ success_send:
             }
         }'
     - |
-      webhook="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=bff7dbe3-3467-3854-9324-c8a4a19b4b7c"
       file_name="golangci-lint.txt"
       file_dir=${CI_PROJECT_DIR}
+      webhook=${NOTIFICATION}
       msg () {
         key=$(echo "${webhook}" | awk -F = '{print $2}')
         if test -s "${file_dir}"; then
