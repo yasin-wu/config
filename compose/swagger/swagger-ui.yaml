@@ -8,9 +8,9 @@ services:
     privileged: true
     environment:
       - TZ=Asia/Shanghai
-      - SWAGGER_JSON=/foo/user.json
+      - SWAGGER_JSON=/foo/apiserver.json
     volumes:
-      - /home/gitlab-runner/swagger:/foo
+      - /Users/yasin/GolandProjects/topsec/agent/docs/docs:/foo
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "8888:8080"
