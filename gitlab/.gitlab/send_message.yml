@@ -12,12 +12,12 @@ failure_send:
          {
             "msgtype": "markdown",
             "markdown": {
-               "content":"'"GitLab CICD运行结果：<font color="RED">FAIL</font> \n
-                >"项目": <font color="comment">${CI_PROJECT_URL}</font>
-                >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
-                >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
-                >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
-                >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>"'"
+               "content":"'"GitLab CICD运行结果：<font color=RED>FAIL</font> \n
+                >项目: <font color=comment>${CI_PROJECT_URL}</font>
+                >分支: <font color=comment>${CI_COMMIT_BRANCH}</font>
+                >commit号: <font color=comment>${CI_COMMIT_SHA}</font>
+                >commit信息: <font color=comment>${CI_COMMIT_MESSAGE}</font>
+                >提交者: <font color=comment>${GITLAB_USER_EMAIL}</font>"'"
             }
         }'
 
@@ -34,14 +34,14 @@ success_send:
          {
             "msgtype": "markdown",
             "markdown": {
-               "content":"'"GitLab CICD运行结果：<font color="GREEN">SUCCESS</font> \n
-                >"项目": <font color="comment">${CI_PROJECT_URL}</font>
-                >"分支": <font color="comment">${CI_COMMIT_BRANCH}</font>
-                >"commit号": <font color="comment">${CI_COMMIT_SHA}</font>
-                >"commit信息": <font color="comment">${CI_COMMIT_MESSAGE}</font>
-                >"提交者": <font color="comment">${GITLAB_USER_EMAIL}</font>
-                >"lint": <font color="comment">lint文件如下:golangci-lint.txt</font>
-                >"输出镜像": <font color="comment">yasin/app:${VERSION}</font>"'"
+               "content":"'"GitLab CICD运行结果：<font color=GREEN>SUCCESS</font> \n
+                >项目: <font color=comment>${CI_PROJECT_URL}</font>
+                >分支: <font color=comment>${CI_COMMIT_BRANCH}</font>
+                >commit号: <font color=comment>${CI_COMMIT_SHA}</font>
+                >commit信息: <font color=comment>${CI_COMMIT_MESSAGE}</font>
+                >提交者: <font color=comment>${GITLAB_USER_EMAIL}</font>
+                >输出镜像: <font color=comment>yasin/app:${VERSION}</font>
+                >golangci-lint: <font color=comment>golangci-lint.txt</font>"'"
             }
         }'
     - |
