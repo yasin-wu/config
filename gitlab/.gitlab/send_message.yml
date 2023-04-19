@@ -1,8 +1,6 @@
 failure_send:
   stage: send_message
   when: on_failure
-  only:
-    - develop
   tags:
     - ${RUNNER}
   script:
@@ -23,8 +21,6 @@ failure_send:
 
 success_send:
   stage: send_message
-  only:
-    - develop
   tags:
     - ${RUNNER}
   script:

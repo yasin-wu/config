@@ -1,6 +1,8 @@
 build:
   stage: build
   only:
+    - main
+    - master
     - develop
   tags:
     - ${RUNNER}

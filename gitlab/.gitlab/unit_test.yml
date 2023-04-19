@@ -1,8 +1,5 @@
 unit_test:
   stage: unit_test
-  allow_failure: true
-  only:
-    - develop
   tags:
     - ${RUNNER}
   before_script:

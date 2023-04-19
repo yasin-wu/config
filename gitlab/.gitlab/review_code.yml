@@ -1,8 +1,6 @@
 review_code:
   stage: review_code
   allow_failure: true
-  only:
-    - develop
   tags:
     - ${RUNNER}
   script:

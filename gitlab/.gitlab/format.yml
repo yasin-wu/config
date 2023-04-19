@@ -1,7 +1,5 @@
 format:
   stage: format
-  only:
-    - develop
   tags:
     - ${RUNNER}
   script:
