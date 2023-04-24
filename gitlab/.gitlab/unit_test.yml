@@ -9,16 +9,15 @@ unit_test:
     - go tool cover -html=coverage.data -o coverage.html
     - go tool cover -func=coverage.data -o coverage.txt
     - cat coverage.txt
-    - mv coverage.html ./ut
   coverage: '/total:+\s+\(statements\)+\s+\d+.\d+%/'
   artifacts:
     expire_in: 1d
     paths:
-      - ut/coverage.html
+      - coverage.html
       - coverage.txt
   cache:
     key: "yasinServer"
     paths:
-      - ut/coverage.html
+      - coverage.html
       - coverage.txt
   retry: 2
