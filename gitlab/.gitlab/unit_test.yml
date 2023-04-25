@@ -2,22 +2,13 @@ unit_test:
   stage: unit_test
   tags:
     - ${RUNNER}
-  before_script:
-    - mkdir -p ut
   script:
-    - go test -coverpkg=./... -coverprofile=coverage.data -timeout=1200s ./...
+    - gotestsum --junitfile unit-test.xml --format standard-quiet -- -gcflags=all=-l -coverprofile=coverage.data -coverpkg=./... ./...
     - go tool cover -html=coverage.data -o coverage.html
-    - go tool cover -func=coverage.data -o coverage.txt
-    - cat coverage.txt
+    - go tool cover -func=coverage.data
   coverage: '/total:+\s+\(statements\)+\s+\d+.\d+%/'
   artifacts:
-    expire_in: 1d
     paths:
       - coverage.html
-      - coverage.txt
-  cache:
-    key: "yasinServer"
-    paths:
-      - coverage.html
-      - coverage.txt
-  retry: 2
+    reports:
+      junit: unit-test.xml

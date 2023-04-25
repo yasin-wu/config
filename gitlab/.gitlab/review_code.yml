@@ -4,10 +4,7 @@ review_code:
   tags:
     - ${RUNNER}
   script:
-    - echo `golangci-lint run --timeout=10m --out-format=tab > golangci-lint.txt`
-    - cat golangci-lint.txt
+    - golangci-lint run --timeout=10m --out-format=junit-xml > golangci-lint.xml
   artifacts:
-    expire_in: 1d
-    paths:
-      - golangci-lint.txt
-
+    reports:
+      junit: golangci-lint.xml
