@@ -1,22 +1,10 @@
 #!/bin/bash
 
+# shellcheck disable=SC2006
+# shellcheck disable=SC2086
 commit=`cat $1`
 
-#username=`git config user.name`
-#email=`git config user.email`
-
-## 判断是否为公司邮箱，且前缀是否为username
-#if [ "$email" != "$username@topsec.com.cn" ]; then
-#	echo "请检查git用户名和邮箱配置是否正确"
-#	echo ""
-#	echo "请设置git用户名：git config --global user.name [邮箱前缀]"
-#	echo "请设置git用户邮箱: git config --global user.email [公司邮箱]"
-#	echo ""
-#	exit 1
-#fi
-
-# 按模板检查header行 https://doc.repo.cloud.io/DEVFLOW/VCS/gitlab.html#commit-message
-types="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|secure|release)(\(.+\))?: .{1,80}|^Merge branch(.*)"
+types="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|release)(\(.+\))?: .{1,80}"
 if [[ ! $commit =~ $types ]]
 then
 	echo "commit信息不合规。"
@@ -35,7 +23,6 @@ then
         echo "  ci: 修改ci脚本"
         echo "  chore: 其它"
         echo "  revert: 撤销某次提交"
-        echo "  secure: 安全更新漏洞修复"
         echo "  release: 发布"
 	echo ""
 	echo "scope[可选]: 本次提交影响的范围。"
@@ -43,8 +30,6 @@ then
 	echo "subject: 简要的描述信息，长度10~80。"
 	echo ""
 	echo "如: feat(logx): 增加一种基于context记录日志的方法"
-	echo ""
-	echo "更多详细信息请参考: https://doc.repo.cloud.io/DEVFLOW/VCS/gitlab.html#commit-message"
 	exit 1
 fi
 

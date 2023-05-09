@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# shellcheck disable=SC2046
+# shellcheck disable=SC2006
 if [ `uname` = "Darwin" ]; then
   GOARCH=amd64 go test ./...
 else
