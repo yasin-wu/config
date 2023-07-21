@@ -2,27 +2,14 @@ version: "2.1"
 
 #### 对应数据文件目录需要UID 1001权限
 services:
-  zookeeper:
-    image: docker.io/bitnami/zookeeper:3.8
-    container_name: zookeeper
-    restart: unless-stopped
-    privileged: true
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    volumes:
-      - "./zookeeper:/bitnami"
-
   kafka:
     image: docker.io/bitnami/kafka:2.8.1
     container_name: kafka
     restart: unless-stopped
     privileged: true
     environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092 #kafka为宿主机IP
       - TZ=${TZ}
     volumes:
