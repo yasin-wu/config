@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: yasin-app
+spec:
+  ports:
+    - port: 6379
+      name: remote
+      protocol: TCP
+      targetPort: 6379
+      nodePort: 30379
+  selector:
+    app: redis
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: yasin-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - image: bitnami/redis:6.2
+          imagePullPolicy: IfNotPresent
+          name: redis
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: 'yes'
+            - name: TZ
+              value: Asia/Shanghai
+          volumeMounts:
+            - name: redis
+              mountPath: /bitnami/redis/data
+            - name: timezone
+              mountPath: /etc/localtime
+      volumes:
+        - name: redis
+          hostPath:
+            path: /home/yasin/kubernetes/redis
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
