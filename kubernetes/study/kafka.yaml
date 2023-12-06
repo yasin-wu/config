@@ -43,18 +43,19 @@ spec:
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
               value: 'true'
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: PLAINTEXT://10.34.101.32:9092
+              value: PLAINTEXT://192.168.0.1:9092
             - name: TZ
               value: Asia/Shanghai
           volumeMounts:
-            - name: kafka
+            - name: data
               mountPath: /bitnami/kafka
+              subPath: kafka
             - name: timezone
               mountPath: /etc/localtime
       volumes:
-        - name: kafka
+        - name: data
           hostPath:
-            path: /home/yasin/kubernetes/kafka
+            path: /data/kafka
         - name: timezone
           hostPath:
-            path: /usr/share/zoneinfo/Asia/Shanghai
+            path: /etc/localtime

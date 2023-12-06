@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: yasin-nginx
-  name: yasin-nginx
+    app: nginx
+  name: nginx
   namespace: yasin-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: yasin-nginx
+      app: nginx
   template:
     metadata:
       labels:
-        app: yasin-nginx
+        app: nginx
     spec:
       containers:
         - image: nginx:latest
           imagePullPolicy: IfNotPresent
-          name: yasin-nginx
+          name: nginx
           ports:
             - containerPort: 443
               hostPort: 443
@@ -28,15 +28,22 @@ spec:
               hostPort: 80
               name: http
               protocol: TCP
+          env:
+            - name: TZ
+              value: Asia/Shanghai
           volumeMounts:
-            - name: nginxconf
+            - name: config
               mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
             - name: timezone
               mountPath: /etc/localtime
       volumes:
-        - name: nginxconf
-          hostPath:
-            path: /Users/yasin/GolandProjects/yasin/config/kubernetes/nginx/nginx.conf
+        - name: config
+          configMap:
+            name: nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
         - name: timezone
           hostPath:
-            path: /usr/share/zoneinfo/Asia/Shanghai
+            path: /etc/localtime

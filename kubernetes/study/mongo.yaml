@@ -45,14 +45,15 @@ spec:
             - name: TZ
               value: Asia/Shanghai
           volumeMounts:
-            - name: mgo
+            - name: data
               mountPath: /bitnami/mongodb/data
+              subPath: mongodb/data
             - name: timezone
               mountPath: /etc/localtime
       volumes:
-        - name: mgo
+        - name: data
           hostPath:
-            path: /home/yasin/kubernetes/mongodb
+            path: /home/yasin-app/data/mongodb/data
         - name: timezone
           hostPath:
-            path: /usr/share/zoneinfo/Asia/Shanghai
+            path: /etc/localtime

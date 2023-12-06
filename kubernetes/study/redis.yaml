@@ -43,14 +43,15 @@ spec:
             - name: TZ
               value: Asia/Shanghai
           volumeMounts:
-            - name: redis
+            - name: data
               mountPath: /bitnami/redis/data
+              subPath: redis/data
             - name: timezone
               mountPath: /etc/localtime
       volumes:
-        - name: redis
+        - name: data
           hostPath:
-            path: /home/yasin/kubernetes/redis
+            path: /home/yasin-app/data/redis/data
         - name: timezone
           hostPath:
-            path: /usr/share/zoneinfo/Asia/Shanghai
+            path: /etc/localtime

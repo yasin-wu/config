@@ -50,24 +50,30 @@ spec:
             - name: TZ
               value: Asia/Shanghai
           volumeMounts:
-            - name: clickhouse
-              mountPath: /bitnami/clickhouse/data
-            - name: chconfig
+            - name: config
               mountPath: /bitnami/clickhouse/etc/config.xml
-            - name: chlog
+              subPath: config.xml
+            - name: data
+              mountPath: /bitnami/clickhouse/data
+              subPath: clickhouse/data
+            - name: log
               mountPath: /var/log/clickhouse-server
+              subPath: clickhouse-server
             - name: timezone
               mountPath: /etc/localtime
       volumes:
-        - name: clickhouse
+        - name: config
+          configMap:
+            name: clickhouse-config
+            items:
+              - key: config.xml
+                path: config.xml
+        - name: data
           hostPath:
-            path: /home/yasin/kubernetes/clickhouse
-        - name: chconfig
+            path: /home/yasin-app/data/clickhouse/data
+        - name: log
           hostPath:
-            path: /config-cbb/clickhouse/config.xml
-        - name: chlog
-          hostPath:
-            path: /home/yasin/kubernetes/clickhouse/log
+            path: /home/yasin-app/log/clickhouse-server
         - name: timezone
           hostPath:
-            path: /usr/share/zoneinfo/Asia/Shanghai
+            path: /etc/localtime
