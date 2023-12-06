@@ -62,6 +62,10 @@ yum install -y kubelet-${k8s_version} kubeadm-${k8s_version} kubectl-${k8s_versi
 yum install -y bash-completion mlocate
 updatedb
 locate bash_completion /usr/share/bash-completion/bash_completion
+line=$(sed -n '/bash_completion/=' /etc/profile)
+sed -i -e "${line}"d /etc/profile
+line=$(sed -n '/kubectl completion bash/=' /etc/profile)
+sed -i -e "${line}"d /etc/profile
 echo 'source /usr/share/bash-completion/bash_completion
 source <(kubectl completion bash)' >> /etc/profile
 
@@ -76,6 +80,8 @@ source <(kubectl completion bash)' >> /etc/profile
 ## init k8s
 sed -i -e s,192.168.0.1,"${ip}",g init/kube-init.yaml
 kubeadm init --config=init/kube-init.yaml
+line=$(sed -n '/export KUBECONFIG/=' /etc/profile)
+sed -i -e "${line}"d /etc/profile
 echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
 kubectl apply -f init/calico.yaml
 
