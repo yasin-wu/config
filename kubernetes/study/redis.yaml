@@ -52,6 +52,7 @@ spec:
         - name: data
           hostPath:
             path: /home/yasin-app/data/redis/data
+            type: DirectoryOrCreate
         - name: timezone
           hostPath:
             path: /etc/localtime

@@ -71,9 +71,11 @@ spec:
         - name: data
           hostPath:
             path: /home/yasin-app/data/clickhouse/data
+            type: DirectoryOrCreate
         - name: log
           hostPath:
             path: /home/yasin-app/log/clickhouse-server
+            type: DirectoryOrCreate
         - name: timezone
           hostPath:
             path: /etc/localtime
