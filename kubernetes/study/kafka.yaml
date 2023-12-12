@@ -48,7 +48,7 @@ spec:
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
               value: 'true'
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: PLAINTEXT://192.168.0.1:9092
+              value: PLAINTEXT://192.168.0.1:30992
             - name: TZ
               value: Asia/Shanghai
           volumeMounts:
