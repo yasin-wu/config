@@ -73,14 +73,6 @@ fi
 echo 'source /usr/share/bash-completion/bash_completion
 source <(kubectl completion bash)' >> /etc/profile
 
-## yum install nfs
-#mkdir -p /home/data && chmod 755 /home/data
-#yum install -y nfs-utils
-#systemctl enable rpcbind && systemctl enable nfs && systemctl start rpcbind && systemctl start nfs
-#echo '/home/data     *(rw,sync,no_root_squash,no_all_squash)' >> /etc/exports
-#systemctl restart nfs
-#showmount -e localhost
-
 ## init k8s
 sed -i -e s,192.168.0.1,"${ip}",g init/kube-init.yaml
 kubeadm init --config=init/kube-init.yaml

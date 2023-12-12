@@ -7,69 +7,60 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: clickhouse
-  name: clickhouse
+    app: nats
+  name: nats
   namespace: yasin-app
 spec:
   ports:
-    - port: 8123
-      name: tcp8123
+    - port: 4222
+      name: tcp4222
       protocol: TCP
-      targetPort: 8123
-      nodePort: 30123
-    - port: 9000
-      name: tcp9000
-      protocol: TCP
-      targetPort: 9000
-      nodePort: 30900
+      targetPort: 4222
+      nodePort: 30222
   selector:
-    app: clickhouse
+    app: nats
   type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: clickhouse
-  name: clickhouse
+    app: nats
+  name: nats
   namespace: yasin-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: clickhouse
+      app: nats
   template:
     metadata:
       labels:
-        app: clickhouse
+        app: nats
     spec:
       containers:
-        - image: bitnami/clickhouse:22.8.8
+        - image: nats:2.8.4-alpine
           imagePullPolicy: IfNotPresent
-          name: clickhouse
+          name: nats
           env:
-            - name: CLICKHOUSE_ADMIN_USER
-              value: default
-            - name: CLICKHOUSE_ADMIN_PASSWORD
-              value: yasin3467
             - name: TZ
               value: Asia/Shanghai
           volumeMounts:
             - name: config
-              mountPath: /bitnami/clickhouse/etc/config.xml
-              subPath: config.xml
+              mountPath: /etc/nats/nats-server.conf
+              subPath: nats-server.conf
             - name: data
-              mountPath: /bitnami/clickhouse/data
-              subPath: clickhouse/data
+              mountPath: /nats/data/jetstream
+              subPath: nats/data/jetstream
             - name: timezone
               mountPath: /etc/localtime
       volumes:
         - name: config
           configMap:
-            name: clickhouse-config
+            name: nats-config
             items:
-              - key: config.xml
-                path: config.xml
+              - key: nats-server.conf
+                path: nats-server.conf
         - name: data
           persistentVolumeClaim:
             claimName: yasin-local-pvc

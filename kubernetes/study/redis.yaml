@@ -13,7 +13,7 @@ metadata:
 spec:
   ports:
     - port: 6379
-      name: remote
+      name: tcp6379
       protocol: TCP
       targetPort: 6379
       nodePort: 30379
@@ -55,9 +55,8 @@ spec:
               mountPath: /etc/localtime
       volumes:
         - name: data
-          hostPath:
-            path: /home/yasin-app/data/redis/data
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+             claimName: yasin-local-pvc
         - name: timezone
           hostPath:
             path: /etc/localtime

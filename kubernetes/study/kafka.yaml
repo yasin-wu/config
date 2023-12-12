@@ -13,7 +13,7 @@ metadata:
 spec:
   ports:
     - port: 9092
-      name: remote
+      name: tcp9092
       protocol: TCP
       targetPort: 9092
       nodePort: 30992
@@ -53,15 +53,14 @@ spec:
               value: Asia/Shanghai
           volumeMounts:
             - name: data
-              mountPath: /bitnami/kafka
-              subPath: kafka
+              mountPath: /bitnami/kafka/data
+              subPath: kafka/data
             - name: timezone
               mountPath: /etc/localtime
       volumes:
         - name: data
-          hostPath:
-            path: /home/yasin-app/data/kafka
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: yasin-local-pvc
         - name: timezone
           hostPath:
             path: /etc/localtime

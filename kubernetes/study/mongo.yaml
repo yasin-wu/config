@@ -13,7 +13,7 @@ metadata:
 spec:
   ports:
     - port: 27017
-      name: remote
+      name: tcp27017
       protocol: TCP
       targetPort: 27017
       nodePort: 32017
@@ -57,9 +57,8 @@ spec:
               mountPath: /etc/localtime
       volumes:
         - name: data
-          hostPath:
-            path: /home/yasin-app/data/mongodb/data
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: yasin-local-pvc
         - name: timezone
           hostPath:
             path: /etc/localtime
