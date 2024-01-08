@@ -1,0 +1,15 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kibana-config
+  namespace: yasin-app
+data:
+  kibana.yml: |
+    server.name: kibana
+    server.host: 0.0.0.0
+    elasticsearch.hosts: ["http://elasticsearch.yasin-app.svc.cluster.local:9200"]
+    elasticsearch.username: kibana
+    elasticsearch.password: yasinwu
+    i18n.locale: zh-CN
+    monitoring.kibana.collection.enabled: true
+    monitoring.ui.container.elasticsearch.enabled: true

@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   name: yasin-app
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,6 +43,7 @@ spec:
               subPath: nginx.conf
             - name: timezone
               mountPath: /etc/localtime
+              readOnly: true
       volumes:
         - name: config
           configMap:

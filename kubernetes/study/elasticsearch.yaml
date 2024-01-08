@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: yasin-app
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: elasticsearch
+  name: elasticsearch
+  namespace: yasin-app
+spec:
+  ports:
+    - port: 9200
+      name: tcp9200
+      protocol: TCP
+      targetPort: 9200
+      nodePort: 30920
+  selector:
+    app: elasticsearch
+  type: NodePort
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: elasticsearch
+  name: elasticsearch
+  namespace: yasin-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      initContainers:
+        - name: sysctl
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: [ "sysctl","-w","vm.max_map_count=262144" ]
+          securityContext:
+            privileged: true
+      containers:
+        - image: elasticsearch:8.0.0
+          imagePullPolicy: IfNotPresent
+          name: elasticsearch
+          env:
+            - name: TAKE_FILE_OWNERSHIP
+              value: 'true'
+            - name: ES_JAVA_OPTS
+              value: -Xms512m -Xmx512m
+            - name: TZ
+              value: Asia/Shanghai
+          volumeMounts:
+            - name: data
+              mountPath: /usr/share/elasticsearch/data
+              subPath: elasticsearch/data
+            - name: config
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
+            - name: certificate
+              mountPath: /usr/share/elasticsearch/config/elastic-certificates.p12
+              subPath: elastic-certificates.p12
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: yasin-local-pvc
+        - name: config
+          configMap:
+            name: elasticsearch-config
+            items:
+              - key: elasticsearch.yml
+                path: elasticsearch.yml
+        - name: certificate
+          configMap:
+            name: elastic-certificate
+            items:
+              - key: elastic-certificates.p12
+                path: elastic-certificates.p12
+        - name: timezone
+          hostPath:
+            path: /etc/localtime

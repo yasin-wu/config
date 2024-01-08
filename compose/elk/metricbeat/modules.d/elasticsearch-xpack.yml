@@ -1,6 +1,6 @@
 - module: elasticsearch
   xpack.enabled: true
   period: 10s
-  hosts: ["http://nginx:9200"]
+  hosts: [ "http://es-master:9200","http://es-node1:9200" ]
   username: "elastic"
   password: "yasinwu"

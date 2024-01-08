@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   name: yasin-app
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -21,6 +22,7 @@ spec:
     app: mongo
   type: NodePort
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,6 +57,7 @@ spec:
               subPath: mongodb/data
             - name: timezone
               mountPath: /etc/localtime
+              readOnly: true
       volumes:
         - name: data
           persistentVolumeClaim:

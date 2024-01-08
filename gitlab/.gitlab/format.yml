@@ -1,7 +1,0 @@
-format:
-  stage: format
-  tags:
-    - ${RUNNER}
-  script:
-    - go mod tidy -v
-    - go fmt $(go list ./... | grep -v /vendor/)

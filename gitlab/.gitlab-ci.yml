@@ -1,5 +1,4 @@
 stages:
-  - "format"
   - "review_code"
   - "unit_test"
   - "build"
@@ -15,7 +14,6 @@ variables:
 
 #文件引入
 include:
-  - local: ".gitlab/format.yml"
   - local: ".gitlab/review_code.yml"
   - local: ".gitlab/unit_test.yml"
   - local: ".gitlab/build.yml"

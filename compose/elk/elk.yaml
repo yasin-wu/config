@@ -11,27 +11,17 @@ services:
       file: compose/elasticsearch.yaml
       service: es-node1
 
-#  metricbeat:
-#    extends:
-#      file: metricbeat.yaml
-#      service: metricbeat
-#    depends_on:
-#      - kibana
-
+  metricbeat:
+    extends:
+      file: compose/metricbeat.yaml
+      service: metricbeat
+    depends_on:
+      - kibana
 
   kibana:
     extends:
       file: compose/kibana.yaml
       service: kibana
-    depends_on:
-      - es-master
-      - es-node1
-      - nginx
-
-  nginx:
-    extends:
-      file: compose/nginx.yaml
-      service: nginx
     depends_on:
       - es-master
       - es-node1

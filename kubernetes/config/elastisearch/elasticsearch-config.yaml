@@ -1,0 +1,19 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: elasticsearch-config
+  namespace: yasin-app
+data:
+  elasticsearch.yml: |
+    cluster.name: yasin-app
+    network.host: 0.0.0.0
+    node.name: es-master
+    bootstrap.memory_lock: false
+    cluster.initial_master_nodes: es-master
+    discovery.seed_hosts: es-master
+    xpack.security.enabled: true
+    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.verification_mode: certificate
+    xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+    xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+    path.repo: ["/usr/share/elasticsearch/esback"]

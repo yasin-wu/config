@@ -27,6 +27,6 @@ processors:
   - add_cloud_metadata: ~
 
 output.elasticsearch:
-  hosts: ["http://nginx:9200"]
+  hosts: ["http://es-master:9200","http://es-node1:9200"]
   username: "elastic"
   password: "yasinwu"
