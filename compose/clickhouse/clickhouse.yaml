@@ -8,13 +8,13 @@ services:
     restart: unless-stopped
     privileged: true
     environment:
-      - TZ=${TZ}
-      - CLICKHOUSE_ADMIN_USER=${CLICKHOUSE_ADMIN_USER}
-      - CLICKHOUSE_ADMIN_PASSWORD=${CLICKHOUSE_ADMIN_PASSWORD}
+      - TZ=Asia/Shanghai
+      - CLICKHOUSE_ADMIN_USER=default
+      - CLICKHOUSE_ADMIN_PASSWORD=8123
     volumes:
-      - ${DATA_PATH}/config/config.xml:/bitnami/clickhouse/etc/config.xml
-      - ${DATA_PATH}/data:/bitnami/clickhouse/data
+      - ./config/config.xml:/bitnami/clickhouse/etc/config.xml
+      - ./data:/bitnami/clickhouse/data
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "${CLICKHOUSE_PORT}:9000"
-      - "${CLICKHOUSE_REMOTE_PORT}:8123"
+      - "9000:9000"
+      - "8123:8123"

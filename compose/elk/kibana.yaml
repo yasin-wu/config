@@ -2,16 +2,16 @@ version: "2.1"
 
 services:
   kibana:
-    image: kibana:${VERSION}
+    image: kibana:8.0.0
     container_name: kibana
     restart: unless-stopped
     privileged: true
     environment:
-      - TZ=${TZ}
+      - TZ=Asia/Shanghai
     volumes:
-      - ${DATA_PATH}/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "${KIBANA_PORT}:5601"
+      - "5601:5601"
     networks:
       - elk_net

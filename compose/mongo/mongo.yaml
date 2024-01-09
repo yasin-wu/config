@@ -1,17 +1,18 @@
 version: '2.1'
 
+#### 对应数据文件目录需要UID 1001权限
 services:
   mongo:
-    image: mongo:5.0.5
+    image: bitnami/mongodb:5.0.5
     container_name: mongo
     restart: unless-stopped
     privileged: true
     environment:
       - TZ=Asia/Shanghai
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=yasin3467
+      - MONGODB_ROOT_USER=root
+      - MONGODB_ROOT_PASSWORD=yasin3467
     volumes:
+      - ./data:/bitnami/mongodb/data
       - /etc/localtime:/etc/localtime:ro
-      - ./data:/data/db
     ports:
       - "27017:27017"

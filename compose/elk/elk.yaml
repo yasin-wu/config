@@ -3,24 +3,24 @@ version: "2.1"
 services:
   es-master:
     extends:
-      file: compose/elasticsearch.yaml
+      file: elasticsearch.yaml
       service: es-master
 
   es-node1:
     extends:
-      file: compose/elasticsearch.yaml
+      file: elasticsearch.yaml
       service: es-node1
 
   metricbeat:
     extends:
-      file: compose/metricbeat.yaml
+      file: metricbeat.yaml
       service: metricbeat
     depends_on:
       - kibana
 
   kibana:
     extends:
-      file: compose/kibana.yaml
+      file: kibana.yaml
       service: kibana
     depends_on:
       - es-master
@@ -28,7 +28,7 @@ services:
 
 networks:
   elk_net:
-    driver: ${NETWORKS_DRIVER}
+    driver: bridge
     ipam:
       config:
         - subnet: 136.132.0.0/16

@@ -1,7 +1,6 @@
 version: '2.1'
 
 services:
-
   mysql:
     image: mysql:5.7.37
     container_name: mysql

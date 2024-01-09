@@ -10,7 +10,7 @@ services:
       - TZ=Asia/Shanghai
       - SWAGGER_JSON=/foo/apiserver.json
     volumes:
-      - /Users/yasin/GolandProjects/topsec/agent/docs/docs:/foo
+      - ./docs:/foo
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "8888:8080"

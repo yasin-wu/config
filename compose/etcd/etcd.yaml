@@ -1,10 +1,10 @@
 version: "2.1"
 
+#### 对应数据文件目录需要UID 1001权限
 services:
-
   etcd:
     image: bitnami/etcd:latest
-    container_name: mongo
+    container_name: etcd
     restart: unless-stopped
     privileged: true
     environment:

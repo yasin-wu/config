@@ -13,7 +13,7 @@ services:
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092 #kafka为宿主机IP
       - TZ=${TZ}
     volumes:
-      - "./kafka:/bitnami"
+      - ./data:/bitnami/kafka/data
     ports:
       - "9092:9092"
     depends_on:

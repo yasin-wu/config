@@ -9,10 +9,9 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - ALLOW_EMPTY_PASSWORD=yes
-      #- REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASSWORD=yasinwu
     volumes:
-      #- ${DATA_PATH_HOST}/redis:/bitnami/redis/data
-      #- ./conf/redis.conf:/opt/bitnami/redis/mounted-etc/redis.conf
+      - ./data:/bitnami/redis/data
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "6379:6379"
