@@ -40,7 +40,14 @@ data:
         server {
             listen       80;
             server_name  localhost;
+            #if ($request_method = 'OPTIONS') {
+            #    return 200;
+            #}
 
+            #location / {
+            #    try_files $uri $uri/ /index.html?/$request_uri;
+            #}
+    
             location / {
                 root   /usr/share/nginx/html;
                 index  index.html index.htm swagger.html;
