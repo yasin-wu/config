@@ -45,6 +45,7 @@ spec:
       labels:
         app: nginx
     spec:
+      nodeName: master
       containers:
         - image: nginx:latest
           imagePullPolicy: IfNotPresent
