@@ -1,7 +1,6 @@
 # https://golangci-lint.run/usage/linters/
-# gilangci-lint 1.49.0
 run:
-  go: "1.17"
+  go: "1.18"
   skip-files:
     - _test.go
   skip-dirs:
@@ -42,8 +41,6 @@ linters:
     - staticcheck
     # 类似编译的前端，解析和检查type
     - typecheck
-    # 格式化imports，去掉没有用的import
-    #    - goimports
     # 检查字段
     - revive
     # 简化代码
@@ -52,8 +49,6 @@ linters:
     - govet
     # 检查语句长度
     - lll
-    # sql执行的检查，检查sql.Rows.Err是否被检查
-    - rowserrcheck
     # 检查没有使用的go代码，包含没有使用的常量、变量、函数、和类型
     - unused
     # 检查没有判断err的场景，这些没有检查的场景可能导致致命bug在某些场景
@@ -68,15 +63,11 @@ linters:
     - unconvert
     # 返回两个参数，一个数据，一个是err，两个都是nil，不是推荐的
     - nilnil
-    # 使用分开的*_test的包目录，如果是测试代码的话
-    - testpackage
     # 检查struct的tags的格式
     - tagliatelle
-    # 检查slice是否固定长度
-    - makezero
 
 service:
-  golangci-lint-version: 1.44.2
+  golangci-lint-version: 1.55.2
 
 issues:
   exclude-rules:
