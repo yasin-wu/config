@@ -8,7 +8,7 @@ dns="DNS:localhost"
 ip="IP:127.0.0.1"
 days=3650
 dir="./tmp/"
-subj="/C=CN/ST=ChengDu/L=ChengDu/O=Yasin/CN=yasin.com.cn"
+subj="/C=CN/ST=ChengDu/L=ChengDu/O=Yasin/OU=Yasin/CN=yasin.com.cn"
 
 while getopts ":d:i:" opt
 do
