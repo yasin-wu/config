@@ -8,6 +8,7 @@ dns="DNS:localhost"
 ip="IP:127.0.0.1"
 days=3650
 dir="./tmp/"
+subj="/C=CN/ST=ChengDu/L=ChengDu/O=Yasin/CN=yasin.com.cn"
 
 while getopts ":d:i:" opt
 do
@@ -31,6 +32,10 @@ do
         exit 1;;
     esac
 done
+
+if [ ! -d tmp ]; then
+  mkdir tmp
+fi
 
 cat > ${dir}my-openssl.cnf << EOF
 [ ca ]
@@ -58,14 +63,14 @@ authorityKeyIdentifier = keyid:always,issuer
 basicConstraints       = CA:true
 EOF
 
-####### 自签名CA
+####### 自签名CA根证书
 openssl genrsa -out ${dir}ca.key 2048
-openssl req -x509 -new -nodes -key ${dir}ca.key -subj "/CN=yasin.com.cn" -days ${days} -out ${dir}ca.crt
+openssl req -x509 -new -nodes -key ${dir}ca.key -subj ${subj} -days ${days} -out ${dir}ca.crt
 
 ####### server certificate
 openssl genrsa -out ${dir}server.key 2048
 openssl req -new -sha256 -key ${dir}server.key \
-    -subj "/C=CN/ST=ChengDu/L=ChengDu/O=Yasin/CN=yasin.com.cn" \
+    -subj ${subj} \
     -reqexts SAN \
     -config <(cat ${dir}my-openssl.cnf <(printf "\n[SAN]\nsubjectAltName=${dns},${ip}")) \
     -out ${dir}server.csr
@@ -77,7 +82,7 @@ openssl x509 -req -days ${days} \
 ####### client certificate
 openssl genrsa -out ${dir}client.key 2048
 openssl req -new \
-    -subj "/C=CN/ST=ChengDu/L=ChengDu/O=Yasin/CN=yasin.com.cn" \
+    -subj ${subj} \
     -config ${dir}my-openssl.cnf \
     -key ${dir}client.key -out ${dir}client.csr
 openssl x509 -req -days ${days} -sha256 \
