@@ -88,3 +88,6 @@ openssl req -new \
 openssl x509 -req -days ${days} -sha256 \
     -in ${dir}client.csr -CA ${dir}ca.crt -CAkey ${dir}ca.key -CAcreateserial \
     -out ${dir}client.crt
+
+####### delete unused file
+rm -rf ${dir}ca.key ${dir}ca.srl ${dir}client.csr ${dir}server.csr ${dir}my-openssl.cnf
