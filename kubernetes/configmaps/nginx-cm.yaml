@@ -10,25 +10,112 @@ metadata:
   name: nginx-config
   namespace: yasin-app
 data:
+  ca.cert: |
+    -----BEGIN CERTIFICATE-----
+    MIIDsTCCApmgAwIBAgIUNPPEa9OPVmXcAmgyrvFU70YsCD4wDQYJKoZIhvcNAQEL
+    BQAwaDELMAkGA1UEBhMCQ04xEDAOBgNVBAgMB0NoZW5nRHUxEDAOBgNVBAcMB0No
+    ZW5nRHUxDjAMBgNVBAoMBVlhc2luMQ4wDAYDVQQLDAVZYXNpbjEVMBMGA1UEAwwM
+    eWFzaW4uY29tLmNuMB4XDTI0MDIyOTAzMDUwNFoXDTM0MDIyNjAzMDUwNFowaDEL
+    MAkGA1UEBhMCQ04xEDAOBgNVBAgMB0NoZW5nRHUxEDAOBgNVBAcMB0NoZW5nRHUx
+    DjAMBgNVBAoMBVlhc2luMQ4wDAYDVQQLDAVZYXNpbjEVMBMGA1UEAwwMeWFzaW4u
+    Y29tLmNuMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAikg8w9ITl9e6
+    aL5iF0qENfvbZAsUEXNRaxp6bCE0BmCM2re0q1Hkq3q7i205Ycm61/uq81Lc9LNV
+    mvpysCg2gMkqJEaKXzlmkZkl4X6O4x4hRGHZ1vIgLaBKf3dTGMIrdSbI36E+OVk0
+    4zND1hlISVpqTKzyFb57QkBfUR//wbgtUpDiXaS0eUcrjmeqFSREnqhaGEc23ue1
+    wKfhYrUTYtVroOZqMatc3WyUnWyZDSqyITTnmPOp6my3i+NCzQUbpSO1EGsBaR/E
+    flyY9iyAHbvJmWhzaKPvwRSYsmn1OIw8tOMw/Oa3Dp/Fvj+LfV92/1qoU+XuzLTI
+    nM3xuvCcswIDAQABo1MwUTAdBgNVHQ4EFgQUoliodnM0+JCAUTr+GEb5QpTcpy4w
+    HwYDVR0jBBgwFoAUoliodnM0+JCAUTr+GEb5QpTcpy4wDwYDVR0TAQH/BAUwAwEB
+    /zANBgkqhkiG9w0BAQsFAAOCAQEAhPANMLiycUJGViILQmtHj7b9uW8ipfv4we3o
+    A57N1HW/O32SpV0MJ8EX08Tqc9AkuaRNT0U66ff1EscfRuEUOnHzziYc0NT0onve
+    HFB6baXftBP/+55lC8wHgR7Hy+BIOYbGSuHMeDagCMqVC95nIm7W9JT7MDU8cag2
+    LO3LJDWhxw8tL4vroP79xcjt4X6dkSBlrLfOnoebun1wzsQZjqC6CUfLfmKObSDQ
+    FKlnz3ZaZDWxgktkTdd8XIg8+g5BG8Go91VYI7uD8nphBH438m6zox0X1yfxSEor
+    xPSbAGrdycnTCJt1xktXF/5H44gkt/4a4/8yJnSetteIqxlQRg==
+    -----END CERTIFICATE-----
+  server.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDyjCCArKgAwIBAgIUF5WrVYl8jZ4mh8MtPMKt2NgsS4swDQYJKoZIhvcNAQEL
+    BQAwaDELMAkGA1UEBhMCQ04xEDAOBgNVBAgMB0NoZW5nRHUxEDAOBgNVBAcMB0No
+    ZW5nRHUxDjAMBgNVBAoMBVlhc2luMQ4wDAYDVQQLDAVZYXNpbjEVMBMGA1UEAwwM
+    eWFzaW4uY29tLmNuMB4XDTI0MDIyOTAzMDUwNFoXDTM0MDIyNjAzMDUwNFowaDEL
+    MAkGA1UEBhMCQ04xEDAOBgNVBAgMB0NoZW5nRHUxEDAOBgNVBAcMB0NoZW5nRHUx
+    DjAMBgNVBAoMBVlhc2luMQ4wDAYDVQQLDAVZYXNpbjEVMBMGA1UEAwwMeWFzaW4u
+    Y29tLmNuMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq84mB19HxI/K
+    v55joWa8d0fQwujj9CUzPTB+yYIH2uCfMkX+L0s7V4bHrx2XeyHiR3O2PfU6rmNU
+    RYB1//zKS1uAdd8deEORwhu8fRMCYCmKsex9AjBGXLlCWKVif+ofJ9u88GpjsiVB
+    4QuCAIQA6+2+EAR6sC6YKqz3ROEXq4nFetHccUV4Y6nkpguxRNGoiKq1ArqeJR87
+    rYJMO4oHOzHvytb7vQAIgXIJHusiRiEetCcaDtdZKtI3ForOVcfkkIZQnM8WAf7b
+    hariiK+LVqL0O/yTU6Vkm5Mu0vRvn71JyR0lFqZPpHwPmYt6fPFi18zH4q/4DAbf
+    HwyyGpeqNQIDAQABo2wwajAoBgNVHREEITAfgglsb2NhbGhvc3SCDHlhc2luLmNv
+    bS5jbocEfwAAATAdBgNVHQ4EFgQUjeIyNZnDUGw9k39Hpsw7mI+VOJswHwYDVR0j
+    BBgwFoAUoliodnM0+JCAUTr+GEb5QpTcpy4wDQYJKoZIhvcNAQELBQADggEBAE6a
+    rn51R5GwegC0K1nZ2k96HUZSV2y8Y6jl6mFH39fkWka//puy6lplzJIFdAmY/vRd
+    jDXmJMelBSZZvbqkPlqZhXPnnGh5gcin1bsdMTAKVBADNW7rFwzqpIwaUSyQ0s+q
+    OV/CMBmiiqUyxdJi07TCIHPVcqjRR+kqT02gBL3brEfzAtufm4X5EFDlsXFzI422
+    +MW7lk/zbRtFa6scND2A4wx7JCvNSxfKADw6fBH8M32ax55gJxBKy7PESIEk9GyK
+    LXhV8Vn/anDYga/GW29GEA88YohWyLFw4mbsMmkz8Mb6k+boz0SiWcyZGAgnWACT
+    I2vHtl1+IY6nr49pnyQ=
+    -----END CERTIFICATE-----
+  server.key: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCrziYHX0fEj8q/
+    nmOhZrx3R9DC6OP0JTM9MH7Jggfa4J8yRf4vSztXhsevHZd7IeJHc7Y99TquY1RF
+    gHX//MpLW4B13x14Q5HCG7x9EwJgKYqx7H0CMEZcuUJYpWJ/6h8n27zwamOyJUHh
+    C4IAhADr7b4QBHqwLpgqrPdE4RericV60dxxRXhjqeSmC7FE0aiIqrUCup4lHzut
+    gkw7igc7Me/K1vu9AAiBcgke6yJGIR60JxoO11kq0jcWis5Vx+SQhlCczxYB/tuF
+    quKIr4tWovQ7/JNTpWSbky7S9G+fvUnJHSUWpk+kfA+Zi3p88WLXzMfir/gMBt8f
+    DLIal6o1AgMBAAECggEAFT2e8QFkJ5aZe/hSnAVOHrcnxbkyWaBxxcplmnczjml/
+    9SC3LNSxyP/2Vx2i+Uu2pJvXN7DGaQIJzK/1psjzn7530trbU1+TOTrholsDy6zH
+    I3k3+VnLkTIsVDZaR7ND19MweE7G9aLqkq6wC21GieSyP1u2aWrRUFFjHsZvfTsO
+    q3/gYYcnbHxPyN0B81TpHOXc/guLLK/Vv6YxE93lzAzg42iNV0TUiMSPNcdHnON/
+    jfz72MgRFKgd4FGy+znhA/m1QAwopt/KdyKGS0gyEJY4bbNSZXXlfhzRr6xNt4PH
+    u087YzvM26NxCvm8bmoR71OUvZZynZRU/AP6BEArrwKBgQDn2dGa2/ciqGwMmKAQ
+    EbYXTxpbzbNdk2AnEPu3sx46BNMRgC7zuegluctc07vtDEbNp4CCAalGXZMgY++y
+    nzRT18b9kq8m6ONHSGDgugQEVZ1zCZGkLY0D5PyKENTis8VzsHrU6ZOdItWBPAtQ
+    EeTexV1TXOTtdzicKHeIfraaAwKBgQC9sz7pyIFAhtFWaW6jGbWkmUhAcH1E4/0G
+    YNgi0emLl0BtpU4KUv376SehJU1WXTBB3kylzYS2OIWLfca/XOHRp4VbGqLXozpX
+    kC3r0rr3aSZ1PZw8Q4RTACnuT+gu8pZfiE7xbFYiYw6X5NBjiZn03r7ByIgx/tM0
+    RrmfU0yRZwKBgQCO0iQHZCb554wfukknfPGRrD3NfYpXQ3jAt/qHr8QX827d4fuK
+    UeQKkUgP17J1FNHsz5ke/Mz8tpnyIv2+J8pBN7Ox8pEIw/91osViydO9o8vI2IUq
+    AJFUa9ORbUrml90zJeyUiYpQCuxAnu9NFKjK/gM+XgP7sCxkLZ1srLnpZwKBgFCX
+    zXu/LoJ+hINkyZdLfetPH+4YnG/fOIk0Lb8lVUZz3PB4UV57geI7XRXOZjvx3WWu
+    jvvGA8Ly4nGv3vc/+8R5mmNpPpPEii3XWFsfLUWdi7Q1l6HWwWoN4MKZejgv4gj2
+    PSu+bh2v3exUTuBq/liVJY/opUwwSgSko4n39sizAoGBAOQjg2ST6rAjArKeIkpC
+    LMlKkVjssr23iFuqcJcoSsPeDnYOVoRW2svdyuIqweoiLrNVrLezG0K2SAnKHP2m
+    t+ftLKW3QwWLYV2HTRvpAkxbPaD1wDMDLzy8N49hZ7rCuK6CcNRVXmv1b2ohDfnl
+    z8OrHTRDAtlL+P2lP6qr7JWS
+    -----END PRIVATE KEY-----
   nginx.conf: |
+    user  root;
+    worker_processes  auto;
+    
     events {
-        worker_connections  1024;
+        use epoll;
+        worker_connections  8192;
     }
-
+    
     http {
         include       mime.types;
         default_type  application/octet-stream;
-
+        log_format  main  '$remote_addr $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '$http_user_agent $http_x_forwarded_for $request_time '
+                      '"$upstream_response_time $upstream_addr $upstream_status"';
+        access_log /var/log/nginx/access.log main;
+    
         sendfile        on;
-        keepalive_timeout  65;   
+        keepalive_timeout  65;
+        proxy_read_timeout  600;
+        resolver  kube-dns.kube-system.svc.cluster.local valid=30s;
     
         #set headers for api
-        proxy_set_header Host                    $host:$server_port;
+        proxy_set_header Host                    $http_host;
         proxy_set_header X-Real-IP               $remote_addr;
         proxy_set_header X-Forwarded-Proto       $scheme;
         proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
         proxy_set_header X-Appengine-Remote-Addr $remote_addr;
-
+    
         #cors config
         add_header 'Access-Control-Allow-Origin' '*' always;
         add_header 'Access-Control-Allow-Methods' 'GET,POST,PUT,DELETE,OPTIONS' always;
@@ -36,19 +123,67 @@ data:
         add_header 'Access-Control-Max-Age' 1728000 always;
         add_header Referrer-Policy 'origin';
         add_header 'Vary' "Origin";
-        
+    
+        #opti config
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 8 128k;
+        fastcgi_busy_buffers_size 128k;
+        fastcgi_temp_file_write_size 128k;
+    
+        #gzip config
+        gzip on;
+        gzip_min_length 1k;
+        gzip_buffers 16 64k;
+        gzip_http_version 1.1;
+        gzip_comp_level 8;
+        gzip_types application/javascript text/plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+        gzip_disable "MSIE [1-6]\.";
+        gzip_vary on;
+        gzip_static on;
+    
         server {
-            listen       80;
-            server_name  localhost;
+            listen 80;
+            server_name yasin.app;
+            client_max_body_size 1024M;
+            server_tokens off;
+    
+            if ($request_method = 'OPTIONS') {
+                return 200;
+            }
     
             location / {
-                root   /usr/share/nginx/html;
-                index  index.html index.htm swagger.html;
+                try_files $uri $uri/ /index.html?/$request_uri;
             }
-
-            error_page   500 502 503 504  /50x.html;
-            location = /50x.html {
-                root   /usr/share/nginx/html;
+    
+            location ~ /api {
+                 set $upstream http://aizen.yasin-app.svc.cluster.local:8888;
+                 proxy_pass $upstream;
+            }
+        }
+    
+        server {
+            listen 443 ssl;
+            server_name yasin.app;
+            client_max_body_size 1024M;
+            server_tokens off;
+            
+            #ssl verify.
+            ssl_prefer_server_ciphers    on;
+            ssl_certificate      /var/lib/ca/server.crt;
+            ssl_certificate_key  /var/lib/ca/server.key;
+            ssl_protocols    TLSv1.2;        
+    
+            if ($request_method = 'OPTIONS') {
+                return 200;
+            }
+    
+            location / {
+                try_files $uri $uri/ /index.html?/$request_uri;
+            }
+    
+            location ~ /api {
+                set $upstream https://10.34.101.49;
+                proxy_pass $upstream;
             }
         }
     }

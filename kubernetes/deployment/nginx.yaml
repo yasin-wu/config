@@ -22,10 +22,11 @@ spec:
       name: http
       protocol: TCP
       targetPort: 80
-      nodePort: 30081
+      nodePort: 30080
   selector:
     app: nginx
   type: NodePort
+  externalTrafficPolicy: Cluster
 ---
 
 apiVersion: apps/v1
@@ -57,6 +58,12 @@ spec:
             - name: config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
+            - name: servercrt
+              mountPath: /var/lib/ca/server.crt
+              subPath: server.crt
+            - name: serverkey
+              mountPath: /var/lib/ca/server.key
+              subPath: server.key
             - name: timezone
               mountPath: /etc/localtime
               readOnly: true
@@ -67,6 +74,18 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
+        - name: servercrt
+          configMap:
+            name: nginx-config
+            items:
+              - key: server.crt
+                path: server.crt
+        - name: serverkey
+          configMap:
+            name: nginx-config
+            items:
+              - key: server.key
+                path: server.key
         - name: timezone
           hostPath:
             path: /etc/localtime
