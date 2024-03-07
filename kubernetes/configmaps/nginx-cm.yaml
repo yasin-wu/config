@@ -180,10 +180,5 @@ data:
             location / {
                 try_files $uri $uri/ /index.html?/$request_uri;
             }
-    
-            location ~ /api {
-                set $upstream https://10.34.101.49;
-                proxy_pass $upstream;
-            }
         }
     }
