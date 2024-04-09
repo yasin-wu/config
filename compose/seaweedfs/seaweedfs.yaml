@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  fs-master:
+    image: bitnami/seaweedfs:latest
+    command: "master"
+    container_name: fs-master
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "9333:9333"
+
+  fs-vloume1:
+    image: bitnami/seaweedfs:latest
+    command: 'volume -dir="/bitnami/seaweedfs/data" -mserver="fs-master:9333" -port=8080'
+    container_name: fs-vloume1
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./fs-volume1/data:/bitnami/seaweedfs/data
+    ports:
+      - "8080:8080"
+    depends_on:
+      - fs-master
