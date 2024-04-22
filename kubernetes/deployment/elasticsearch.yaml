@@ -83,7 +83,7 @@ spec:
                 path: elasticsearch.yml
         - name: certificate
           configMap:
-            name: elastic-certificate
+            name: elasticsearch-config
             items:
               - key: elastic-certificates.p12
                 path: elastic-certificates.p12
