@@ -146,6 +146,7 @@ data:
             server_name yasin.app;
             client_max_body_size 1024M;
             server_tokens off;
+            root /usr/share/nginx/html;
     
             if ($request_method = 'OPTIONS') {
                 return 200;
@@ -166,7 +167,8 @@ data:
             server_name yasin.app;
             client_max_body_size 1024M;
             server_tokens off;
-            
+            root /usr/share/nginx/html;
+    
             #ssl verify.
             ssl_prefer_server_ciphers    on;
             ssl_certificate      /var/lib/ca/server.crt;
