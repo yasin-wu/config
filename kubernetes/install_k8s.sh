@@ -4,11 +4,28 @@ ip=${1-"192.168.0.1"}
 docker_version=19.03.12
 k8s_version=1.20.11
 
+red='\033[31m'
+green='\033[40;32m'
+plain='\033[0m'
+
+offSwapFunc() {
+  line=$(sed -n '/swap/=' /etc/fstab)
+  swapoff -a
+  for d in ${line}; do
+     if sed -n "${d}","${d}"p '/etc/fstab' | grep "#" > /dev/null; then
+        echo -e "${green}*******swap off******* ${plain}"
+      else
+        sed -i "${d}"'s/^/#&/g' /etc/fstab
+      fi
+  done
+}
+
 ## rename hostname
 hostnamectl set-hostname master
 
 ## stop firewalld
 systemctl stop firewalld
+systemctl disable firewalld
 
 ## disable SELINUX
 setenforce 0
@@ -16,13 +33,7 @@ sed -i "s/SELINUX=enforcing/SELINUX=disable/g" /etc/selinux/config
 sed -i "s/SELINUX=permissive/SELINUX=disable/g" /etc/selinux/config
 
 ## off swap
-line=$(sed -n '/swap/=' /etc/fstab)
-swapoff -a
-if sed -n "${line}","${line}"p '/etc/fstab' | grep "#/dev" > /dev/null; then
-  echo "swap off"
-else
-  sed -i "${line}"'s/^/#&/g' /etc/fstab
-fi
+offSwapFunc
 
 ## echo k8s.conf
 mv -f /etc/sysctl.d/k8s.conf /etc/sysctl.d/k8s.conf.bk 2>/dev/null ||
