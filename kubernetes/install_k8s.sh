@@ -4,7 +4,6 @@ ip=${1-"192.168.0.1"}
 docker_version=19.03.12
 k8s_version=1.20.11
 
-red='\033[31m'
 green='\033[40;32m'
 plain='\033[0m'
 
@@ -42,9 +41,6 @@ echo "net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 net.ipv4.ip_forward = 1" >> /etc/sysctl.d/k8s.conf
 sysctl -p /etc/sysctl.d/k8s.conf
-
-## yum install vim
-yum install -y vim
 
 ## yum install docker
 yum remove -y docker docker-common docker-selinux docker-engine
