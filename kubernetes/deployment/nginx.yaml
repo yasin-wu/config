@@ -27,6 +27,10 @@ spec:
     app: nginx
   type: NodePort
   externalTrafficPolicy: Cluster
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv4
+    - IPv6
 ---
 
 apiVersion: apps/v1
