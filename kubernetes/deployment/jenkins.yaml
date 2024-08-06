@@ -1,10 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: yasin-app
----
-
-apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -45,14 +39,14 @@ spec:
           - name: "GOPROXY"
             value: "https://goproxy.cn,direct"
         volumeMounts:
-          - name: jenkins-home
+          - name: data
             mountPath: /var/jenkins_home
             subPath: jenkins_home
           - name: timezone
             mountPath: /etc/localtime
             readOnly: true
       volumes:
-        - name: jenkins-home
+        - name: data
           persistentVolumeClaim:
             claimName: yasin-local-pvc
         - name: timezone

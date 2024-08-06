@@ -1,10 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: yasin-app
----
-
-apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -17,7 +11,7 @@ spec:
       name: https
       protocol: TCP
       targetPort: 443
-      nodePort: 30444
+      nodePort: 30443
     - port: 80
       name: http
       protocol: TCP
@@ -62,12 +56,8 @@ spec:
             - name: config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
-            - name: servercrt
-              mountPath: /var/lib/ca/server.crt
-              subPath: server.crt
-            - name: serverkey
-              mountPath: /var/lib/ca/server.key
-              subPath: server.key
+            - name: server-ca
+              mountPath: /var/lib/ca
             - name: timezone
               mountPath: /etc/localtime
               readOnly: true
@@ -78,16 +68,12 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
-        - name: servercrt
+        - name: server-ca
           configMap:
             name: nginx-config
             items:
               - key: server.crt
                 path: server.crt
-        - name: serverkey
-          configMap:
-            name: nginx-config
-            items:
               - key: server.key
                 path: server.key
         - name: timezone
