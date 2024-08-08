@@ -53,7 +53,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-             claimName: yasin-local-pvc
+             claimName: yasin-cloud
         - name: timezone
           hostPath:
             path: /etc/localtime

@@ -13,4 +13,4 @@ xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
 xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 
-path.repo: ["/usr/share/elasticsearch/esback"]
+path.repo: ["/usr/share/elasticsearch/backup"]

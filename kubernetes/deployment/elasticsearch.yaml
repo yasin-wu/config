@@ -36,7 +36,7 @@ spec:
     spec:
       initContainers:
         - name: sysctl
-          image: busybox
+          image: busybox:latest
           imagePullPolicy: IfNotPresent
           command: [ "sysctl","-w","vm.max_map_count=262144" ]
           securityContext:
@@ -56,15 +56,22 @@ spec:
             - name: data
               mountPath: /usr/share/elasticsearch/data
               subPath: elasticsearch/data
+            - name: data
+              mountPath: /usr/share/elasticsearch/backup
+              subPath: elasticsearch/backup
             - name: config
-              mountPath: /usr/share/elasticsearch/config
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
+            - name: config
+              mountPath: /usr/share/elasticsearch/config/elastic-certificates.p12
+              subPath: elastic-certificates.p12
             - name: timezone
               mountPath: /etc/localtime
               readOnly: true
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: yasin-local-pvc
+            claimName: yasin-cloud
         - name: config
           configMap:
             name: elasticsearch-config

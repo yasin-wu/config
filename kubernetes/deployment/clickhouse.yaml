@@ -63,7 +63,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: yasin-local-pvc
+            claimName: yasin-cloud
         - name: config
           configMap:
             name: clickhouse-config
