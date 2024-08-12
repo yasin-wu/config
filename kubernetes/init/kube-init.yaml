@@ -1,7 +1,14 @@
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+nodeRegistration:
+  criSocket: unix:///run/cri-dockerd.sock
+  imagePullPolicy: IfNotPresent
+---
+
+apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 imageRepository: registry.aliyuncs.com/google_containers
-kubernetesVersion: v1.20.11
+kubernetesVersion: v1.28.2
 apiServer:
   certSANs:
   - "192.168.0.1"
