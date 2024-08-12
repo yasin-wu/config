@@ -6,7 +6,8 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart=/usr/bin/kubelet --container-runtime-endpoint=unix:///run/cri-dockerd.sock
+ExecStart=/usr/bin/kubelet
+#ExecStart=/usr/bin/kubelet --container-runtime-endpoint=unix:///run/cri-dockerd.sock
 Restart=always
 StartLimitInterval=0
 RestartSec=10
