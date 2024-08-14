@@ -4,6 +4,7 @@ metadata:
   name: yasin-cloud
   namespace: yasin-app
 spec:
+  volumeName: yasin-cloud
   storageClassName: nfs
   accessModes:
     - ReadWriteMany
