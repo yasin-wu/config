@@ -1,0 +1,7 @@
+image:
+  repository: bitnami/redis
+  tag: "6.2"
+service:
+  type: NodePort
+  port: 6379
+  nodePort: 30379

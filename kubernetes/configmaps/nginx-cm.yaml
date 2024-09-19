@@ -4,7 +4,7 @@ metadata:
   name: nginx-config
   namespace: yasin-app
 data:
-  ca.cert: |
+  ca.crt: |
     -----BEGIN CERTIFICATE-----
     MIIDsTCCApmgAwIBAgIUNPPEa9OPVmXcAmgyrvFU70YsCD4wDQYJKoZIhvcNAQEL
     BQAwaDELMAkGA1UEBhMCQ04xEDAOBgNVBAgMB0NoZW5nRHUxEDAOBgNVBAcMB0No

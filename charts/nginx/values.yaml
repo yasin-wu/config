@@ -1,0 +1,25 @@
+global:
+  replicaCount: 1
+  localPV:
+    name: yasin-cloud
+    path: /Users/yasin/Downloads/data
+    node: docker-desktop
+  localPVC:
+    name: yasin-cloud
+  image:
+    pullPolicy: IfNotPresent
+
+image:
+  repository: nginx
+  tag: "latest"
+
+service:
+  httpPort: 80
+  httpNodeport: 30080
+  httpsPort: 443
+  httpsNodeport: 30443
+  type: NodePort
+  externalTrafficPolicy: Cluster
+
+configMap:
+  name: nginx-config

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{.Chart.Name}}
+  name: {{.Chart.Name}}
+spec:
+  replicas: {{.Values.global.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Chart.Name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Chart.Name}}
+    spec:
+      containers:
+        - image: {{.Values.image.repository}}:{{.Values.image.tag}}
+          imagePullPolicy: {{.Values.global.image.pullPolicy}}
+          name: {{.Chart.Name}}
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: server-ca
+              mountPath: /var/lib/ca
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name:  {{.Values.configMap.name}}
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: server-ca
+          configMap:
+            name:  {{.Values.configMap.name}}
+            items:
+              - key: server.crt
+                path: server.crt
+              - key: server.key
+                path: server.key
+        - name: timezone
+          hostPath:
+            path: /etc/localtime

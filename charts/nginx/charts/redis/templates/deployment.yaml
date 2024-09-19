@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{.Chart.Name}}
+  name: {{.Chart.Name}}
+spec:
+  replicas: {{.Values.global.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Chart.Name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Chart.Name}}
+    spec:
+      containers:
+        - image: {{.Values.image.repository}}:{{.Values.image.tag}}
+          imagePullPolicy: {{.Values.global.image.pullPolicy}}
+          name: {{.Chart.Name}}
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: 'yes'
+            - name: TZ
+              value: Asia/Shanghai
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/redis/data
+              subPath: redis/data
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{.Values.global.localPVC.name}}
+        - name: timezone
+          hostPath:
+            path: /etc/localtime
