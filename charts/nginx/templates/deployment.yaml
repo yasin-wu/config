@@ -21,30 +21,11 @@ spec:
           env:
             - name: TZ
               value: Asia/Shanghai
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            - name: config
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-            - name: server-ca
-              mountPath: /var/lib/ca
-            - name: timezone
-              mountPath: /etc/localtime
-              readOnly: true
+            {{- toYaml . | nindent 12}}
+          {{- end}}
+      {{- with .Values.volumes }}
       volumes:
-        - name: config
-          configMap:
-            name:  {{.Values.configMap.name}}
-            items:
-              - key: nginx.conf
-                path: nginx.conf
-        - name: server-ca
-          configMap:
-            name:  {{.Values.configMap.name}}
-            items:
-              - key: server.crt
-                path: server.crt
-              - key: server.key
-                path: server.key
-        - name: timezone
-          hostPath:
-            path: /etc/localtime
+        {{- toYaml . | nindent 8}}
+      {{- end}}

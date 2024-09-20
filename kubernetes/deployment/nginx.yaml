@@ -46,7 +46,7 @@ spec:
     spec:
       nodeName: master
       containers:
-        - image: nginx:latest
+        - image: bitnami/nginx:1.25.4
           imagePullPolicy: IfNotPresent
           name: nginx
           env:
@@ -54,10 +54,10 @@ spec:
               value: Asia/Shanghai
           volumeMounts:
             - name: config
-              mountPath: /etc/nginx/nginx.conf
+              mountPath: /opt/bitnami/nginx/conf/nginx.conf
               subPath: nginx.conf
-            - name: server-ca
-              mountPath: /var/lib/ca
+            - name: ca
+              mountPath: /home/yasin/nginx/ca
             - name: timezone
               mountPath: /etc/localtime
               readOnly: true
@@ -68,7 +68,7 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
-        - name: server-ca
+        - name: ca
           configMap:
             name: nginx-config
             items:
