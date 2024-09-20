@@ -1,10 +1,15 @@
 global:
   replicaCount: 1
-  localPV:
+  pv:
+    storage: 1T
+    storageClass: local-path
+    persistentVolumeReclaimPolicy: Retain
     name: yasin-cloud
-    path: /Users/yasin/Downloads/data
+    nfsPath: /home/yasin/data
+    nfsServer: 192.168.0.1
+    localPath: /Users/yasin/Downloads/data
     node: docker-desktop
-  localPVC:
+  pvc:
     name: yasin-cloud
   image:
     pullPolicy: IfNotPresent

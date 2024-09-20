@@ -37,4 +37,4 @@ spec:
       {{- end}}
         - name: data
           persistentVolumeClaim:
-            claimName: {{.Values.global.localPVC.name}}
+            claimName: {{.Values.global.pvc.name}}
