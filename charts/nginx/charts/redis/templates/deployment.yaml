@@ -18,22 +18,23 @@ spec:
         - image: {{.Values.image.repository}}:{{.Values.image.tag}}
           imagePullPolicy: {{.Values.global.image.pullPolicy}}
           name: {{.Chart.Name}}
+          {{- with .Values.global.env}}
           env:
+            {{- toYaml . | nindent 12}}
+          {{- end}}
             - name: ALLOW_EMPTY_PASSWORD
               value: 'yes'
-            - name: TZ
-              value: Asia/Shanghai
+          {{- with .Values.global.volumeMounts}}
           volumeMounts:
+            {{- toYaml . | nindent 12}}
+          {{- end}}
             - name: data
               mountPath: /bitnami/redis/data
               subPath: redis/data
-            - name: timezone
-              mountPath: /etc/localtime
-              readOnly: true
+      {{- with .Values.global.volumes}}
       volumes:
+        {{- toYaml . | nindent 8}}
+      {{- end}}
         - name: data
           persistentVolumeClaim:
             claimName: {{.Values.global.localPVC.name}}
-        - name: timezone
-          hostPath:
-            path: /etc/localtime
