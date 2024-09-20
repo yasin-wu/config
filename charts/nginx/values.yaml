@@ -24,6 +24,10 @@ service:
 configMap:
   name: nginx-config
 
+env:
+  - name: TZ
+    value: Asia/Shanghai
+
 volumeMounts:
   - name: config
     mountPath: /opt/bitnami/nginx/conf/nginx.conf
