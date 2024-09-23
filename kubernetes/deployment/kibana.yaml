@@ -8,7 +8,7 @@ metadata:
 spec:
   ports:
     - port: 5601
-      name: tcp5601
+      name: http
       protocol: TCP
       targetPort: 5601
       nodePort: 30561

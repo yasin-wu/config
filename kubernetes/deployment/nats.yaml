@@ -8,7 +8,7 @@ metadata:
 spec:
   ports:
     - port: 4222
-      name: tcp4222
+      name: tcp
       protocol: TCP
       targetPort: 4222
       nodePort: 30222

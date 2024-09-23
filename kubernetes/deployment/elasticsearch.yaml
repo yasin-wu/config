@@ -8,7 +8,7 @@ metadata:
 spec:
   ports:
     - port: 9200
-      name: tcp9200
+      name: http
       protocol: TCP
       targetPort: 9200
       nodePort: 30920
