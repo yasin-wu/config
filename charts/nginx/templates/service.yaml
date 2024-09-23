@@ -1,22 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: {{.Chart.Name}}
-  name: {{.Chart.Name}}
+  name: {{ .Chart.Name }}
+  {{- include "nginx.metadata.labels" . | indent 2}}
 spec:
   ports:
-    - port: {{.Values.service.httpsPort}}
+    - port: {{ .Values.service.httpsPort }}
       name: https
       protocol: TCP
-      targetPort: {{.Values.service.httpsPort}}
-      nodePort: {{.Values.service.httpsNodeport}}
-    - port: {{.Values.service.httpPort}}
+      targetPort: {{ .Values.service.httpsPort }}
+      nodePort: {{ .Values.service.httpsNodeport }}
+    - port: {{ .Values.service.httpPort }}
       name: http
       protocol: TCP
-      targetPort: {{.Values.service.httpPort}}
-      nodePort: {{.Values.service.httpNodeport}}
+      targetPort: {{ .Values.service.httpPort }}
+      nodePort: {{ .Values.service.httpNodeport }}
   selector:
-    app: {{.Chart.Name}}
-  type: {{.Values.service.type}}
-  externalTrafficPolicy: {{.Values.service.externalTrafficPolicy}}
+    app: {{ .Chart.Name}}
+  type: {{ .Values.service.type }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}

@@ -1,40 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: {{.Chart.Name}}
-  name: {{.Chart.Name}}
+  name: {{ .Chart.Name }}
+  {{- include "nginx.metadata.labels" . | indent 2}}
 spec:
-  replicas: {{.Values.global.replicaCount}}
+  replicas: {{ .Values.global.replicaCount }}
   selector:
-    matchLabels:
-      app: {{.Chart.Name}}
+  {{- include "nginx.spec.selector" . | indent 4 }}
   template:
-    metadata:
-      labels:
-        app: {{.Chart.Name}}
+  {{- include "nginx.spec.template" . | indent 4 }}
     spec:
       containers:
-        - image: {{.Values.image.repository}}:{{.Values.image.tag}}
-          imagePullPolicy: {{.Values.global.image.pullPolicy}}
-          name: {{.Chart.Name}}
-          {{- with .Values.global.env}}
+        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          name: {{ .Chart.Name }}
+          {{- with .Values.global.env }}
           env:
-            {{- toYaml . | nindent 12}}
-          {{- end}}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
             - name: ALLOW_EMPTY_PASSWORD
               value: 'yes'
-          {{- with .Values.global.volumeMounts}}
+          {{- with .Values.global.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12}}
-          {{- end}}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
             - name: data
               mountPath: /bitnami/redis/data
               subPath: redis/data
-      {{- with .Values.global.volumes}}
+      {{- with .Values.global.volumes }}
       volumes:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
         - name: data
           persistentVolumeClaim:
-            claimName: {{.Values.global.pvc.name}}
+            claimName: {{ .Values.global.pvc.name }}

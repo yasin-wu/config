@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{.Values.global.pvc.name}}
+  name: {{ .Values.global.pvc.name }}
 spec:
-  volumeName: {{.Values.global.pv.name}}
-  storageClassName: {{.Values.global.pv.storageClass}}
+  volumeName: {{ .Values.global.pv.name }}
+  storageClassName: {{ .Values.global.pv.storageClass }}
   accessModes:
-    {{- if eq .Values.global.pv.storageClass "local-path"}}
+    {{- if eq .Values.global.pv.storageClass "local-path" }}
     - ReadWriteOnce
-    {{- else if eq .Values.global.pv.storageClass "nfs"}}
+    {{- else if eq .Values.global.pv.storageClass "nfs" }}
     - ReadWriteMany
-    {{- end}}
+    {{- end }}
   resources:
     requests:
-      storage: {{.Values.global.pv.storage}}
+      storage: {{ .Values.global.pv.storage }}
