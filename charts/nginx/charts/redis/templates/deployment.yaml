@@ -15,24 +15,15 @@ spec:
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           name: {{ .Chart.Name }}
           env:
-          {{- with .Values.global.env }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.env }}
+          {{- with concat .Values.global.env .Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
-          {{- with .Values.global.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.volumeMounts }}
+          {{- with concat .Values.global.volumeMounts .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
-      {{- with .Values.global.volumes }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.volumes }}
+      {{- with concat .Values.global.volumes .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- include "nginx.pvc.volumes" . | indent 8 }}
