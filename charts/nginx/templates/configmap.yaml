@@ -1,7 +1,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ .Values.configMap.name }}
+  name: nginx-config
 data:
 {{ (.Files.Glob "etc/**").AsConfig | indent 2 }}
   ca.crt.test: |

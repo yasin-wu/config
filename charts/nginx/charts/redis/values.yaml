@@ -5,3 +5,11 @@ service:
   type: NodePort
   port: 6379
   nodePort: 30379
+env:
+  - name: ALLOW_EMPTY_PASSWORD
+    value: 'yes'
+volumeMounts:
+  - name: data
+    mountPath: /bitnami/redis/data
+    subPath: redis/data
+volumes: []

@@ -16,3 +16,11 @@ metadata:
 labels:
   app: {{ .Chart.Name }}
 {{- end }}
+
+{{/*pvc.volumes*/}}
+{{- define "nginx.pvc.volumes" }}
+- name: data
+  persistentVolumeClaim:
+    claimName: {{.Values.global.pvc.name}}
+{{- end }}
+

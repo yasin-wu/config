@@ -37,5 +37,27 @@ service:
   type: NodePort
   externalTrafficPolicy: Cluster
 
-configMap:
-  name: nginx-config
+env: []
+volumeMounts:
+  - name: config
+    mountPath: /opt/bitnami/nginx/conf/nginx.conf
+    subPath: nginx.conf
+  - name: ca
+    mountPath: /home/yasin/nginx/ca
+volumes:
+  - name: config
+    configMap:
+      name: nginx-config
+      items:
+        - key: nginx.conf
+          path: nginx.conf
+  - name: ca
+    configMap:
+      name: nginx-config
+      items:
+        - key: ca.crt
+          path: ca.crt
+        - key: server.crt
+          path: server.crt
+        - key: server.key
+          path: server.key

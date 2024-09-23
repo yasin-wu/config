@@ -14,23 +14,25 @@ spec:
         - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           name: {{ .Chart.Name }}
-          {{- with .Values.global.env }}
           env:
+          {{- with .Values.global.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-            - name: ALLOW_EMPTY_PASSWORD
-              value: 'yes'
-          {{- with .Values.global.volumeMounts }}
+          {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
+          {{- with .Values.global.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-            - name: data
-              mountPath: /bitnami/redis/data
-              subPath: redis/data
-      {{- with .Values.global.volumes }}
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
+      {{- with .Values.global.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        - name: data
-          persistentVolumeClaim:
-            claimName: {{ .Values.global.pvc.name }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- include "nginx.pvc.volumes" . | indent 8 }}
