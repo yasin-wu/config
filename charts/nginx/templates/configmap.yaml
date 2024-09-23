@@ -3,4 +3,4 @@ apiVersion: v1
 metadata:
   name: {{.Values.configMap.name}}
 data:
-{{(.Files.Glob "etc/*").AsConfig | indent 2}}
+{{(.Files.Glob "etc/**").AsConfig | indent 2}}
