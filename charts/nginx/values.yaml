@@ -30,9 +30,9 @@ image:
   tag: "1.25.4"
 
 service:
-  httpPort: 80
+  httpPort: 8080
   httpNodeport: 30080
-  httpsPort: 443
+  httpsPort: 8443
   httpsNodeport: 30443
   type: NodePort
   externalTrafficPolicy: Cluster

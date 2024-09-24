@@ -7,15 +7,15 @@ metadata:
   namespace: yasin-app
 spec:
   ports:
-    - port: 443
+    - port: 8443
       name: https
       protocol: TCP
-      targetPort: 443
+      targetPort: 8443
       nodePort: 30443
-    - port: 80
+    - port: 8080
       name: http
       protocol: TCP
-      targetPort: 80
+      targetPort: 8080
       nodePort: 30080
   selector:
     app: nginx
