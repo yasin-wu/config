@@ -2,13 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
-  {{- include "nginx.metadata.labels" . | indent 2}}
+  {{- include "metadata.labels" . | indent 2}}
 spec:
   replicas: {{ .Values.global.replicaCount }}
   selector:
-  {{- include "nginx.spec.selector" . | indent 4 }}
+  {{- include "spec.selector" . | indent 4 }}
   template:
-  {{- include "nginx.spec.template" . | indent 4 }}
+  {{- include "spec.template" . | indent 4 }}
     spec:
       containers:
         - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -26,4 +26,4 @@ spec:
       {{- with concat .Values.global.volumes .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- include "nginx.pvc.volumes" . | indent 8 }}
+      {{- include "pvc.volumes" . | indent 8 }}

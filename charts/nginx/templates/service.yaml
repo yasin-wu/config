@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Chart.Name }}
-  {{- include "nginx.metadata.labels" . | indent 2}}
+  {{- include "metadata.labels" . | indent 2}}
 spec:
   ports:
     - port: {{ .Values.service.httpsPort }}
