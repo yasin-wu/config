@@ -40,10 +40,10 @@ spec:
       serviceAccountName: jenkins
       containers:
       - name: jenkins
-        image: jenkins/jenkins:2.442-jdk17
+        image: jenkins/jenkins:latest-jdk17
         env:
-          - name: "GOPROXY"
-            value: "https://goproxy.cn,direct"
+          - name: GOPROXY
+            value: https://goproxy.cn,direct
         volumeMounts:
           - name: jenkins-home
             mountPath: /var/jenkins_home
