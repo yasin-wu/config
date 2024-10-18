@@ -1,0 +1,10 @@
+networks:
+  yasin_net:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 136.132.0.0/16
+          gateway: 136.132.0.1
+        - subnet: 2001:cafe:42:0::/56
+          gateway: 2001:cafe:42:0::1
