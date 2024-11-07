@@ -1,22 +1,22 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Values.global.pv.name }}
+  name: {{ .Values.pv.name }}
 spec:
   capacity:
-    storage: {{ .Values.global.pv.storage }}
+    storage: {{ .Values.pv.storage }}
   volumeMode: Filesystem
   accessModes:
-    {{- if eq .Values.global.pv.storageClass "local-path" }}
+    {{- if eq .Values.pv.storageClass "local-path" }}
     - ReadWriteOnce
-    {{- else if eq .Values.global.pv.storageClass "nfs" }}
+    {{- else if eq .Values.pv.storageClass "nfs" }}
     - ReadWriteMany
     {{- end }}
-  persistentVolumeReclaimPolicy: {{ .Values.global.pv.persistentVolumeReclaimPolicy }}
-  storageClassName: {{ .Values.global.pv.storageClass }}
-  {{- if eq .Values.global.pv.storageClass "local-path" }}
+  persistentVolumeReclaimPolicy: {{ .Values.pv.persistentVolumeReclaimPolicy }}
+  storageClassName: {{ .Values.pv.storageClass }}
+  {{- if eq .Values.pv.storageClass "local-path" }}
   local:
-    path: {{ .Values.global.pv.localPath }}
+    path: {{ .Values.pv.localPath }}
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -24,9 +24,9 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - {{ .Values.global.pv.node }}
-  {{- else if eq .Values.global.pv.storageClass "nfs" }}
+                - {{ .Values.pv.node }}
+  {{- else if eq .Values.pv.storageClass "nfs" }}
   nfs:
-    path: {{ .Values.global.pv.nfsPath }}
-    server: {{ .Values.global.pv.nfsServer }}
+    path: {{ .Values.pv.nfsPath }}
+    server: {{ .Values.pv.nfsServer }}
   {{- end }}
