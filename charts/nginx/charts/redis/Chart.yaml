@@ -1,5 +1,0 @@
-apiVersion: v2
-name: redis
-description: A Redis Helm chart for Kubernetes
-version: 6.2.0
-appVersion: "6.2"

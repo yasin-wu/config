@@ -1,64 +1,34 @@
-global:
-  replicaCount: 1
-  pvc:
-    name: yasin-cloud
-  image:
-    pullPolicy: IfNotPresent
-  env:
-    - name: TZ
-      value: Asia/Shanghai
-  volumeMounts:
-    - name: timezone
-      mountPath: /etc/localtime
-      readOnly: true
-  volumes:
-    - name: timezone
-      hostPath:
-        path: /etc/localtime
-
+mode: product
+replicaCount: 1
+crbUser: yasin-user
 image:
-  repository: bitnami/nginx
-  tag: "1.25.4"
-
-pv:
-  storage: 1T
-  storageClass: local-path
-  persistentVolumeReclaimPolicy: Retain
-  name: yasin-cloud
-  nfsPath: /home/yasin/data
-  nfsServer: 192.168.0.1
-  localPath: /Users/yasin/Downloads/data
-  localPathNode: docker-desktop
-
+  pullPolicy: IfNotPresent
 service:
-  httpPort: 8080
-  httpNodeport: 30080
-  httpsPort: 8443
-  httpsNodeport: 30443
-  type: NodePort
-  externalTrafficPolicy: Cluster
-
-env: []
+  # ipv6: enable, disable
+  ipv6: disable
+  httpsNodePort: 30443
+  httpNodePort: 30080
+  externalTrafficPolicy: Local
+env:
+  - name: TZ
+    value: Asia/Shanghai
 volumeMounts:
-  - name: config
-    mountPath: /opt/bitnami/nginx/conf/nginx.conf
-    subPath: nginx.conf
-  - name: ca
-    mountPath: /home/yasin/nginx/ca
+  - name: timezone
+    mountPath: /etc/localtime
+    readOnly: true
 volumes:
-  - name: config
-    configMap:
-      name: nginx-config
-      items:
-        - key: nginx.conf
-          path: nginx.conf
-  - name: ca
-    configMap:
-      name: nginx-config
-      items:
-        - key: ca.crt
-          path: ca.crt
-        - key: server.crt
-          path: server.crt
-        - key: server.key
-          path: server.key
+  - name: timezone
+    hostPath:
+      path: /etc/localtime
+webRoot:
+  volumeMounts:
+    - name: web-root
+      mountPath: /home/yasin/data/web-root
+  volumes:
+    - name: web-root
+      hostPath:
+        path: /home/yasin/data/web-root
+nginx:
+  nodeName:
+  image: bitnami/nginx
+  tag: "1.25.4"

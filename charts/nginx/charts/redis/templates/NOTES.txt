@@ -1,3 +1,0 @@
-Successfully installed Redis.
-
-Check the status by running: kubectl get pod -n {{ .Release.Namespace }}

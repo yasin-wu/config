@@ -1,29 +1,62 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}
+  labels:
+    app: nginx
+  name: nginx
   namespace: {{ .Release.Namespace }}
-  {{- include "metadata.labels" . | indent 2}}
 spec:
-  replicas: {{ .Values.global.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
-  {{- include "spec.selector" . | indent 4 }}
+    matchLabels:
+      app: nginx
   template:
-  {{- include "spec.template" . | indent 4 }}
+    metadata:
+      labels:
+        app: nginx
     spec:
-      containers:
-        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
-          name: {{ .Chart.Name }}
-          env:
-          {{- with concat .Values.global.env .Values.env}}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          volumeMounts:
-          {{- with concat .Values.global.volumeMounts .Values.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      volumes:
-      {{- with concat .Values.global.volumes .Values.volumes }}
-        {{- toYaml . | nindent 8 }}
+      {{- if .Values.nginx.nodeName }}
+      nodeName: {{ .Values.nginx.nodeName }}
       {{- end }}
+      containers:
+        - image: "{{ .Values.nginx.image }}:{{ .Values.nginx.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: web-nginx
+          env:
+            {{- include "common.env" . }}
+          volumeMounts:
+            {{- include "common.volumeMounts" . }}
+{{/*            {{- include "webRoot.volumeMounts" . }}*/}}
+            - name: config
+              mountPath: /opt/bitnami/nginx/conf/nginx.conf
+              subPath: nginx.conf
+            - name: nginx-confd
+              mountPath: /opt/bitnami/nginx/conf/conf.d
+            - name: web-nginx-ca
+              mountPath: /home/yasin/nginx/ca
+      volumes:
+        {{- include "common.volumes" . }}
+{{/*        {{- include "webRoot.volumes" . }}*/}}
+        - name: config
+          configMap:
+            name: nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: nginx-confd
+          configMap:
+            name: nginx-config
+        - name: web-nginx-ca
+          configMap:
+            name: nginx-config
+            items:
+              - key: ca.crt
+                path: ca.crt
+              - key: client.crt
+                path: client.crt
+              - key: client.key
+                path: client.key
+              - key: server.crt
+                path: server.crt
+              - key: server.key
+                path: server.key

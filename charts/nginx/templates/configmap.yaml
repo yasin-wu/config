@@ -4,6 +4,5 @@ metadata:
   name: nginx-config
   namespace: {{ .Release.Namespace }}
 data:
-{{ (.Files.Glob "etc/**").AsConfig | indent 2 }}
-  ca.crt.test: |
-{{ .Files.Get "etc/ca/ca.crt" | indent 4 }}
+{{ (.Files.Glob "etc/*").AsConfig | indent 2 }}
+{{ (.Files.Glob "etc/conf.d/*").AsConfig | indent 2 }}

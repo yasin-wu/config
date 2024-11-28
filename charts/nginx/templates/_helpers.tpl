@@ -1,26 +1,34 @@
-{{/*spec.selector*/}}
-{{- define "spec.selector" }}
-matchLabels:
-  app: {{ .Chart.Name }}
+{{/*common env*/}}
+{{- define "common.env" }}
+{{- with .Values.env }}
+  {{- toYaml . | nindent 12 }}
+{{- end }}
 {{- end }}
 
-{{/*spec.template*/}}
-{{- define "spec.template" }}
-metadata:
-  labels:
-    app: {{ .Chart.Name }}
+{{/*common volumeMounts*/}}
+{{- define "common.volumeMounts" }}
+{{- with .Values.volumeMounts }}
+  {{- toYaml . | nindent 12 }}
+{{- end }}
 {{- end }}
 
-{{/*metadata.labels*/}}
-{{- define "metadata.labels" }}
-labels:
-  app: {{ .Chart.Name }}
+{{/*common volumes*/}}
+{{- define "common.volumes" }}
+{{- with .Values.volumes }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
 {{- end }}
 
-{{/*pvc.volumes*/}}
-{{- define "pvc.volumes" }}
-- name: data
-  persistentVolumeClaim:
-    claimName: {{.Values.global.pvc.name}}
+{{/*webRoot volumeMounts*/}}
+{{- define "webRoot.volumeMounts" }}
+{{- with .Values.webRoot.volumeMounts }}
+  {{- toYaml . | nindent 12 }}
+{{- end }}
 {{- end }}
 
+{{/*webRoot volumes*/}}
+{{- define "webRoot.volumes" }}
+{{- with .Values.webRoot.volumes }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
+{{- end }}
