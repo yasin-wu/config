@@ -43,9 +43,6 @@ spec:
 {{/*              subPath: clickhouse/data*/}}
       volumes:
         {{- include "common.volumes" . }}
-{{/*        - name: data*/}}
-{{/*          persistentVolumeClaim:*/}}
-{{/*            claimName: yasin-cloud*/}}
         - name: config
           configMap:
             name: clickhouse-config

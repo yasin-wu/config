@@ -1,0 +1,24 @@
+mode: product
+replicaCount: 1
+image:
+  pullPolicy: IfNotPresent
+service:
+  nodePort: 32017
+  externalTrafficPolicy: Local
+env:
+  - name: TZ
+    value: Asia/Shanghai
+volumeMounts:
+  - name: timezone
+    mountPath: /etc/localtime
+    readOnly: true
+volumes:
+  - name: timezone
+    hostPath:
+      path: /etc/localtime
+mongodb:
+  nodeName:
+  image: bitnami/mongodb
+  tag: "5.0.5"
+  rootUser: root
+  rootPassword: Yasin_3467

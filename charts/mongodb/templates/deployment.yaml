@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongodb
+  name: mongodb
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      {{- if .Values.mongodb.nodeName }}
+      nodeName: {{ .Values.mongodb.nodeName }}
+      {{- end }}
+      containers:
+        - image: "{{ .Values.mongodb.image }}:{{ .Values.mongodb.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: mongodb
+          env:
+            {{- include "common.env" . }}
+            - name: MONGODB_ROOT_USER
+              value: {{ .Values.mongodb.rootUser }}
+            - name: MONGODB_ROOT_PASSWORD
+              value: {{ .Values.mongodb.rootPassword }}
+          volumeMounts:
+            {{- include "common.volumeMounts" . }}
+{{/*            - name: data*/}}
+{{/*              mountPath: /bitnami/mongodb/data*/}}
+{{/*              subPath: mongodb/data*/}}
+      volumes:
+        {{- include "common.volumes" . }}
