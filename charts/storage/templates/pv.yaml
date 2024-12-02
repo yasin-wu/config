@@ -1,0 +1,36 @@
+{{- if and .Release.IsInstall (eq .Values.storage.create "enable") }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.storage.pvName }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  capacity:
+    storage: {{ .Values.storage.storage }}
+  volumeMode: Filesystem
+  accessModes:
+    {{- if eq .Values.storage.storageClass "local-path" }}
+    - ReadWriteOnce
+    {{- else if eq .Values.storage.storageClass "nfs" }}
+    - ReadWriteMany
+    {{- end }}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ .Values.storage.storageClass }}
+  {{- if eq .Values.storage.storageClass "local-path" }}
+  local:
+    path: {{ .Values.storage.localPath }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - {{ .Values.storage.localPathNode }}
+  {{- else if eq .Values.storage.storageClass "nfs" }}
+  nfs:
+    path: {{ .Values.storage.nfsPath }}
+    server: {{ .Values.storage.nfsServer }}
+  {{- end }}
+  {{- end }}

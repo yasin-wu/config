@@ -1,0 +1,11 @@
+storage:
+  # create: enable, disable
+  create: disable
+  pvName: yasin-pv
+  pvcName: yasin-pvc
+  storage: 1T
+  storageClass: local-path
+  nfsServer:
+  nfsPath:
+  localPath: /home/yasin/data
+  localPathNode: master

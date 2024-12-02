@@ -1,0 +1,4 @@
+Successfully installed {{ .Release.Name }} {{ .Chart.AppVersion }}.
+
+Check the pv status by running: kubectl get pv -A
+Check the pvc status by running: kubectl get pvc -n {{ .Release.Namespace }}

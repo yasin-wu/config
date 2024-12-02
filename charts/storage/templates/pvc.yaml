@@ -1,0 +1,21 @@
+{{- if and .Release.IsInstall (eq .Values.storage.create "enable") }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.storage.pvcName }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  volumeName: {{ .Values.storage.pvName }}
+  storageClassName: {{ .Values.storage.storageClass }}
+  accessModes:
+    {{- if eq .Values.storage.storageClass "local-path" }}
+    - ReadWriteOnce
+    {{- else if eq .Values.storage.storageClass "nfs" }}
+    - ReadWriteMany
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.storage.storage }}
+  {{- end }}
