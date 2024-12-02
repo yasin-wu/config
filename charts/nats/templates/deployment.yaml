@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nats
+  name: nats
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nats
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      {{- if .Values.nats.nodeName }}
+      nodeName: {{ .Values.nats.nodeName }}
+      {{- end }}
+      containers:
+        - image: "{{ .Values.nats.image }}:{{ .Values.nats.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: nats
+          env:
+            {{- include "common.env" . }}
+          volumeMounts:
+            {{- include "common.volumeMounts" . }}
+            - name: config
+              mountPath: /etc/nats/nats-server.conf
+              subPath: nats-server.conf
+      volumes:
+        {{- include "common.volumes" . }}
+        - name: config
+          configMap:
+            name: nats-config
+            items:
+              - key: nats-server.conf
+                path: nats-server.conf

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: Nats
+description: A Nats chart for Kubernetes
+type: application
+version: 1.0.0
+appVersion: "2.8.4-alpine"
