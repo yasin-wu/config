@@ -1,0 +1,50 @@
+{
+    "alert":{
+      "action":"allowed",
+      "category":"Potential Corporate Privacy Violation",
+      "gid":1,
+      "metadata":{
+        "created_at":[
+          "2010_07_30"
+        ],
+        "updated_at":[
+          "2019_03_18"
+        ]
+      },
+      "rev":13,
+      "severity":1,
+      "signature":"ET POLICY Outgoing Basic Auth Base64 HTTP Password detected unencrypted",
+      "signature_id":2006380,
+      "signature_type":"威胁情报"
+    },
+    "app_proto":"http",
+    "dest_ip":"192.168.131.135",
+    "dest_port":9200,
+    "event_type":"alert",
+    "flow":{
+      "bytes_toclient":505,
+      "bytes_toserver":604,
+      "pkts_toclient":3,
+      "pkts_toserver":4,
+      "start":"2021-08-31T09:46:00.009982+0800"
+    },
+    "flow_id":897865225873150,
+    "http":{
+      "hostname":"192.168.131.135",
+      "http_content_type":"application/json",
+      "http_method":"POST",
+      "http_port":9200,
+      "http_user_agent":"go-elasticsearch/8.0.0-SNAPSHOT (linux amd64; Go 1.14.4)",
+      "length":181,
+      "protocol":"HTTP/1.1",
+      "status":404,
+      "url":"/cdrcb_qy_waf_01_2021_08_31/_search"
+    },
+    "in_iface":"eth0",
+    "proto":"TCP",
+    "src_ip":"192.168.131.129",
+    "src_port":45152,
+    "status":0,
+    "timestamp":"2021-08-31T09:46:00.032237+0800",
+    "tx_id":0
+}

@@ -3,7 +3,7 @@ version: "2.1"
 #### 对应数据文件目录需要UID 1001权限
 services:
   kafka:
-    image: docker.io/bitnami/kafka:2.8.1
+    image: bitnami/kafka:2.8.1
     container_name: kafka
     restart: unless-stopped
     privileged: true
