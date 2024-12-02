@@ -1,0 +1,23 @@
+mode: product
+replicaCount: 1
+image:
+  pullPolicy: IfNotPresent
+service:
+  nodePort: 30992
+  externalTrafficPolicy: Local
+env:
+  - name: TZ
+    value: Asia/Shanghai
+volumeMounts:
+  - name: timezone
+    mountPath: /etc/localtime
+    readOnly: true
+volumes:
+  - name: timezone
+    hostPath:
+      path: /etc/localtime
+kafka:
+  nodeName:
+  image: bitnami/kafka
+  tag: "3.5.0"
+  cfgAdvertisedListeners: PLAINTEXT://10.34.101.32:30992

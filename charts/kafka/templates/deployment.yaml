@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kafka
+  name: kafka
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - image: "{{ .Values.kafka.image }}:{{ .Values.kafka.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: kafka
+          env:
+            {{- include "common.env" . }}
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: 'yes'
+            - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+              value: 'true'
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              value: {{ .Values.kafka.cfgAdvertisedListeners }}
+          volumeMounts:
+            {{- include "common.volumeMounts" . }}
+{{/*            - name: data*/}}
+{{/*              mountPath: /bitnami/kafka/data*/}}
+{{/*              subPath: kafka/data*/}}
+      volumes:
+        {{- include "common.volumes" . }}
