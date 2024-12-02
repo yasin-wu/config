@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: clickhouse
+  name: clickhouse
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: clickhouse
+  template:
+    metadata:
+      labels:
+        app: clickhouse
+    spec:
+      {{- if .Values.clickhouse.nodeName }}
+      nodeName: {{ .Values.clickhouse.nodeName }}
+      {{- end }}
+      containers:
+        - image: "{{ .Values.clickhouse.image }}:{{ .Values.clickhouse.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: clickhouse
+          env:
+            {{- include "common.env" . }}
+            - name: CLICKHOUSE_ADMIN_USER
+              value: {{ .Values.clickhouse.user }}
+            - name: CLICKHOUSE_ADMIN_PASSWORD
+              value: {{ .Values.clickhouse.password }}
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+          volumeMounts:
+            {{- include "common.volumeMounts" . }}
+            - name: config
+              mountPath: /bitnami/clickhouse/etc/config.xml
+              subPath: config.xml
+            - name: config
+              mountPath: /bitnami/clickhouse/etc/users.xml
+              subPath: users.xml
+            - name: data
+              mountPath: /bitnami/clickhouse/data
+              subPath: clickhouse/data
+      volumes:
+        {{- include "common.volumes" . }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: yasin-cloud
+        - name: config
+          configMap:
+            name: clickhouse-config
+            items:
+              - key: config.xml
+                path: config.xml
+              - key: users.xml
+                path: users.xml
