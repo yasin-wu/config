@@ -21,7 +21,7 @@ spec:
       containers:
         - image: "{{ .Values.nginx.image }}:{{ .Values.nginx.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: web-nginx
+          name: nginx
           env:
             {{- include "common.env" . }}
           volumeMounts:
@@ -32,7 +32,7 @@ spec:
               subPath: nginx.conf
             - name: nginx-confd
               mountPath: /opt/bitnami/nginx/conf/conf.d
-            - name: web-nginx-ca
+            - name: nginx-ca
               mountPath: /home/yasin/nginx/ca
       volumes:
         {{- include "common.volumes" . }}
@@ -46,7 +46,7 @@ spec:
         - name: nginx-confd
           configMap:
             name: nginx-config
-        - name: web-nginx-ca
+        - name: nginx-ca
           configMap:
             name: nginx-config
             items:
