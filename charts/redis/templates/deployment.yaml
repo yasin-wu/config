@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      {{- if .Values.redis.nodeName }}
+      nodeName: {{ .Values.redis.nodeName }}
+      {{- end }}
+      containers:
+        - image: "{{ .Values.redis.image }}:{{ .Values.redis.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            privileged: true
+          name: redis
+          env:
+            {{- include "common.env" . }}
+            {{- if .Values.redis.password }}
+            - name: REDIS_PASSWORD
+              value: {{ .Values.redis.password }}
+            {{- end }}
+            - name: REDIS_AOF_ENABLED
+              value: "no"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+          volumeMounts:
+            {{- include "common.volumeMounts" . }}
+{{/*            - name: data*/}}
+{{/*              mountPath: /bitnami/redis/data*/}}
+{{/*              subPath: redis/data*/}}
+      volumes:
+        {{- include "common.volumes" . }}

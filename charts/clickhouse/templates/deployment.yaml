@@ -38,14 +38,14 @@ spec:
             - name: config
               mountPath: /bitnami/clickhouse/etc/users.xml
               subPath: users.xml
-            - name: data
-              mountPath: /bitnami/clickhouse/data
-              subPath: clickhouse/data
+{{/*            - name: data*/}}
+{{/*              mountPath: /bitnami/clickhouse/data*/}}
+{{/*              subPath: clickhouse/data*/}}
       volumes:
         {{- include "common.volumes" . }}
-        - name: data
-          persistentVolumeClaim:
-            claimName: yasin-cloud
+{{/*        - name: data*/}}
+{{/*          persistentVolumeClaim:*/}}
+{{/*            claimName: yasin-cloud*/}}
         - name: config
           configMap:
             name: clickhouse-config
