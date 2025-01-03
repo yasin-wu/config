@@ -8,6 +8,7 @@ metadata:
 spec:
   selector:
     app: nginx
+    appType: nginx
   ports:
     - port: 443
       name: https

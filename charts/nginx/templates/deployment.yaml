@@ -10,10 +10,12 @@ spec:
   selector:
     matchLabels:
       app: nginx
+      appType: nginx
   template:
     metadata:
       labels:
         app: nginx
+        appType: nginx
     spec:
       {{- if .Values.nginx.nodeName }}
       nodeName: {{ .Values.nginx.nodeName }}
