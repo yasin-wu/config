@@ -14,9 +14,9 @@ variables:
 
 #文件引入
 include:
-  - local: ".gitlab/review_code.yml"
-  - local: ".gitlab/unit_test.yml"
-  - local: ".gitlab/build.yml"
-  - local: ".gitlab/deploy.yml"
-  - local: ".gitlab/push.yml"
-  - local: ".gitlab/send_message.yml"
+  - ".gitlab/review_code.yml"
+  - ".gitlab/unit_test.yml"
+  - ".gitlab/build.yml"
+  - ".gitlab/deploy.yml"
+  - ".gitlab/push.yml"
+  - ".gitlab/send_message.yml"
