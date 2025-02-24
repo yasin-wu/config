@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-registry
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: docker-registry
+  template:
+    metadata:
+      labels:
+        app: docker-registry
+    spec:
+      containers:
+        - image: "{{ .Values.registry.image }}:{{ .Values.registry.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: registry
+          env:
+            {{- with .Values.env }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: timezone
+              mountPath: /etc/localtime
+            - name: certs
+              mountPath: /docker/registry/certs
+            - name: auth
+              mountPath: /docker/registry/auth/htpasswd
+              subPath: htpasswd
+            - name: data
+              mountPath: /docker/registry/data
+              subPath: registry/data
+      volumes:
+        - name: certs
+          configMap:
+            name: docker-registry-config
+            items:
+              - key: server.crt
+                path: server.crt
+              - key: server.key
+                path: server.key
+        - name: auth
+          configMap:
+            name: docker-registry-config
+            items:
+              - key: htpasswd
+                path: htpasswd
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.storage.pvcName }}
+        - hostPath:
+            path: /etc/localtime
+          name: timezone

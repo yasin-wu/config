@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+  namespace: yasin-app
+spec:
+  selector:
+    app: nginx
+  ports:
+    - port: 443
+      name: https
+      protocol: TCP
+      targetPort: 8443
+      nodePort: 31443
+    - port: 80
+      name: http
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 31080
+  type: NodePort
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+  namespace: yasin-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+      appType: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        appType: nginx
+    spec:
+      imagePullSecrets:
+        - name: docker-registry-secret
+      containers:
+      - image: yasin-hub.com.cn:30500/yasin/nginx:1.25.4
+        name: nginx
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket

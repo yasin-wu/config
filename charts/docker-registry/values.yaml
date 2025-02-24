@@ -1,0 +1,25 @@
+mode: product
+replicaCount: 1
+image:
+  pullPolicy: IfNotPresent
+storage:
+  pvcName: yasin-cloud
+env:
+  - name: TZ
+    value: Asia/Shanghai
+  - name: REGISTRY_HTTP_TLS_CERTIFICATE
+    value: /docker/registry/certs/server.crt
+  - name: REGISTRY_HTTP_TLS_KEY
+    value: /docker/registry/certs/server.key
+  - name: REGISTRY_AUTH
+    value: htpasswd
+  - name: REGISTRY_AUTH_HTPASSWD_REALM
+    value: Registry Realm
+  - name: REGISTRY_AUTH_HTPASSWD_PATH
+    value: /docker/registry/auth/htpasswd
+  - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+    value: /docker/registry/data
+registry:
+  nodeName:
+  image: docker.io/registry
+  tag: "latest"
