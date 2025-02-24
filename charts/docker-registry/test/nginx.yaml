@@ -47,11 +47,11 @@ spec:
       - image: yasin-hub.com.cn:30500/yasin/nginx:1.25.4
         name: nginx
         imagePullPolicy: IfNotPresent
-        volumeMounts:
-          - name: docker-sock
-            mountPath: /var/run/docker.sock
-      volumes:
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
-            type: Socket
+#        volumeMounts:
+#          - name: docker-sock
+#            mountPath: /var/run/docker.sock
+#      volumes:
+#        - name: docker-sock
+#          hostPath:
+#            path: /var/run/docker.sock
+#            type: Socket
