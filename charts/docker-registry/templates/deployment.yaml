@@ -16,7 +16,7 @@ spec:
       containers:
         - image: "{{ .Values.registry.image }}:{{ .Values.registry.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: registry
+          name: docker-registry
           env:
             {{- with .Values.env }}
               {{- toYaml . | nindent 12 }}
