@@ -12,7 +12,7 @@
     </profiles>
     <users>
         <default>
-            <password>yasin3467</password>
+            <password from_env="CLICKHOUSE_ADMIN_PASSWORD"></password>
             <networks>
                 <ip>::/0</ip>
             </networks>
