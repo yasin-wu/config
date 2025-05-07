@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: nginx
   name: nginx
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: nginx
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

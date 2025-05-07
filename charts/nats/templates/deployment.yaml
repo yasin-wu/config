@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: nats
   name: nats
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: nats
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

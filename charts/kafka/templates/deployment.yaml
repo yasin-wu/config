@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: kafka
   name: kafka
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: kafka
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

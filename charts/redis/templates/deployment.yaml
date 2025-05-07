@@ -1,10 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: redis
   name: redis
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: redis
+    component: database
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         app: redis
+        component: database
     spec:
       {{- if .Values.redis.nodeName }}
       nodeName: {{ .Values.redis.nodeName }}

@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: docker-registry
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: docker-registry
 spec:
   replicas: {{ .Values.replicaCount}}
   selector:
