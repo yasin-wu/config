@@ -1,0 +1,49 @@
+# 生成SSH密钥: ssh-keygen -t ed25519 -f /var/jenkins_home/.ssh/id_ed25519
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      serviceAccountName: jenkins-sa
+      securityContext:
+        fsGroup: 993
+      containers:
+        - name: jenkins
+          image: yasin/jenkins:lts
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+          volumeMounts:
+            - name: jenkins-data
+              mountPath: /var/jenkins_home
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+            - mountPath: /usr/bin/docker
+              name: docker-bin
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: jenkins-data
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker-bin
+          hostPath:
+            path: /usr/bin/docker
+        - name: timezone
+          hostPath:
+            path: /etc/localtime
