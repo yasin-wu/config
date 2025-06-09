@@ -16,7 +16,7 @@ spec:
     spec:
       serviceAccountName: jenkins-sa
       securityContext:
-        fsGroup: 993
+        fsGroup: 993 # docker用户组 more /etc/group |grep docker
       containers:
         - name: jenkins
           image: yasin/jenkins:lts
@@ -26,7 +26,7 @@ spec:
               value: Asia/Shanghai
           volumeMounts:
             - name: jenkins-data
-              mountPath: /var/jenkins_home
+              mountPath: /var/jenkins_home #admin password ./secrets/initialAdminPassword
             - mountPath: /var/run/docker.sock
               name: docker-sock
             - mountPath: /usr/bin/docker
