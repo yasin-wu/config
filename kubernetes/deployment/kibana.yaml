@@ -1,29 +1,29 @@
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: kibana
   name: kibana
   namespace: yasin-app
+  labels:
+    app: kibana
 spec:
-  ports:
-    - port: 5601
-      name: http
-      protocol: TCP
-      targetPort: 5601
-      nodePort: 30561
   selector:
     app: kibana
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5601
+      targetPort: 5601
+      nodePort: 30561
   type: NodePort
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: kibana
   name: kibana
   namespace: yasin-app
+  labels:
+    app: kibana
 spec:
   replicas: 1
   selector:
@@ -35,9 +35,9 @@ spec:
         app: kibana
     spec:
       containers:
-        - image: kibana:8.0.0
+        - name: kibana
           imagePullPolicy: IfNotPresent
-          name: kibana
+          image: kibana:8.0.0
           env:
             - name: TZ
               value: Asia/Shanghai
@@ -57,4 +57,4 @@ spec:
                 path: kibana.yml
         - name: timezone
           hostPath:
-            path: /etc/localtime
+            path: /usr/share/zoneinfo/Asia/Shanghai

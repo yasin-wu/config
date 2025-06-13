@@ -19,18 +19,18 @@ spec:
         fsGroup: 993 # docker用户组 more /etc/group |grep docker
       containers:
         - name: jenkins
-          image: yasin/jenkins:lts
           imagePullPolicy: IfNotPresent
+          image: yasin/jenkins:lts
           env:
             - name: TZ
               value: Asia/Shanghai
           volumeMounts:
             - name: jenkins-data
               mountPath: /var/jenkins_home #admin password ./secrets/initialAdminPassword
-            - mountPath: /var/run/docker.sock
-              name: docker-sock
-            - mountPath: /usr/bin/docker
-              name: docker-bin
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: docker-bin
+              mountPath: /usr/bin/docker
             - name: timezone
               mountPath: /etc/localtime
               readOnly: true
@@ -46,4 +46,4 @@ spec:
             path: /usr/bin/docker
         - name: timezone
           hostPath:
-            path: /etc/localtime
+            path: /usr/share/zoneinfo/Asia/Shanghai
