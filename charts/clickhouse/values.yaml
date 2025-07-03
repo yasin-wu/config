@@ -16,7 +16,7 @@ volumeMounts:
 volumes:
   - name: timezone
     hostPath:
-      path: /etc/localtime
+      path: /usr/share/zoneinfo/Asia/Shanghai
 clickhouse:
   nodeName:
   image: bitnami/clickhouse

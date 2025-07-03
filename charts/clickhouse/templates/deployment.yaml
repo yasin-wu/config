@@ -21,9 +21,9 @@ spec:
       nodeName: {{ .Values.clickhouse.nodeName }}
       {{- end }}
       containers:
-        - image: "{{ .Values.clickhouse.image }}:{{ .Values.clickhouse.tag }}"
+        - name: clickhouse
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: clickhouse
+          image: "{{ .Values.clickhouse.image }}:{{ .Values.clickhouse.tag }}"
           env:
             {{- include "common.env" . }}
             - name: CLICKHOUSE_ADMIN_USER
@@ -35,11 +35,7 @@ spec:
           volumeMounts:
             {{- include "common.volumeMounts" . }}
             - name: config
-              mountPath: /bitnami/clickhouse/etc/config.xml
-              subPath: config.xml
-            - name: config
-              mountPath: /bitnami/clickhouse/etc/users.xml
-              subPath: users.xml
+              mountPath: /bitnami/clickhouse/etc
 {{/*            - name: data*/}}
 {{/*              mountPath: /bitnami/clickhouse/data*/}}
 {{/*              subPath: clickhouse/data*/}}

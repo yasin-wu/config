@@ -15,9 +15,9 @@ volumeMounts:
 volumes:
   - name: timezone
     hostPath:
-      path: /etc/localtime
+      path: /usr/share/zoneinfo/Asia/Shanghai
 kafka:
   nodeName:
   image: bitnami/kafka
   tag: "3.5.0"
-  cfgAdvertisedListeners: PLAINTEXT://10.34.101.32:30992
+  cfgAdvertisedListeners: PLAINTEXT://10.10.101.10:30992

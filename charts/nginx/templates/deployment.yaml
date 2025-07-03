@@ -5,25 +5,25 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: nginx
+    component: nginx
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: nginx
-      appType: nginx
   template:
     metadata:
       labels:
         app: nginx
-        appType: nginx
+        component: nginx
     spec:
       {{- if .Values.nginx.nodeName }}
       nodeName: {{ .Values.nginx.nodeName }}
       {{- end }}
       containers:
-        - image: "{{ .Values.nginx.image }}:{{ .Values.nginx.tag }}"
+        - name: nginx
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: nginx
+          image: "{{ .Values.nginx.image }}:{{ .Values.nginx.tag }}"
           env:
             {{- include "common.env" . }}
           volumeMounts:

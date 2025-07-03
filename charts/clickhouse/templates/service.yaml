@@ -9,16 +9,16 @@ spec:
   selector:
     app: clickhouse
   ports:
-    - port: 8123
-      name: http
+    - name: http
       protocol: TCP
+      port: 8123
       targetPort: 8123
     {{- if eq .Values.mode "dev" }}
       nodePort: {{ .Values.service.httpNodePort }}
     {{- end }}
-    - port: 9000
-      name: tcp
+    - name: tcp
       protocol: TCP
+      port: 9000
       targetPort: 9000
   {{- if eq .Values.mode "dev" }}
       nodePort: {{ .Values.service.tcpNodePort }}

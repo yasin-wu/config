@@ -21,21 +21,25 @@ spec:
       nodeName: {{ .Values.redis.nodeName }}
       {{- end }}
       containers:
-        - image: "{{ .Values.redis.image }}:{{ .Values.redis.tag }}"
+        - name: redis
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.redis.image }}:{{ .Values.redis.tag }}"
           securityContext:
             privileged: true
-          name: redis
           env:
             {{- include "common.env" . }}
             {{- if .Values.redis.password }}
             - name: REDIS_PASSWORD
               value: {{ .Values.redis.password }}
             {{- end }}
-            - name: REDIS_AOF_ENABLED
-              value: "no"
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
+            - name: REDIS_AOF_ENABLED
+              value: "no"
+            - name: REDIS_RDB_POLICY_DISABLED
+              value: "no"
+            - name: REDIS_RDB_POLICY
+              value: "900#1 600#5 300#10 120#50 60#1000 30#10000"
           volumeMounts:
             {{- include "common.volumeMounts" . }}
 {{/*            - name: data*/}}

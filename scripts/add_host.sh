@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 定义要添加的主机配置项
-new_host="10.34.101.32 yasin-hub.com.cn"
+new_host="10.10.101.10 yasin-hub.com.cn"
 
 # 检查配置项是否已存在
 if ! grep -q "$new_host" /etc/hosts; then

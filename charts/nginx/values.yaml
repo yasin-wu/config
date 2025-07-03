@@ -19,7 +19,7 @@ volumeMounts:
 volumes:
   - name: timezone
     hostPath:
-      path: /etc/localtime
+      path: /usr/share/zoneinfo/Asia/Shanghai
 webRoot:
   volumeMounts:
     - name: web-root

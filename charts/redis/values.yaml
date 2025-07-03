@@ -15,7 +15,7 @@ volumeMounts:
 volumes:
   - name: timezone
     hostPath:
-      path: /etc/localtime
+      path: /usr/share/zoneinfo/Asia/Shanghai
 redis:
   nodeName:
   image: bitnami/redis

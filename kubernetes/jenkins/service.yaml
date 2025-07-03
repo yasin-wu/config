@@ -4,7 +4,6 @@ metadata:
   name: jenkins-service
   namespace: jenkins
 spec:
-  type: NodePort  # 或 LoadBalancer
   selector:
     app: jenkins
   ports:
@@ -17,3 +16,4 @@ spec:
       protocol: TCP
       port: 50000
       targetPort: 50000
+  type: NodePort  # 或 LoadBalancer

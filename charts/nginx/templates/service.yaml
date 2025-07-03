@@ -9,14 +9,14 @@ spec:
   selector:
     app: nginx
   ports:
-    - port: 443
-      name: https
+    - name: https
       protocol: TCP
+      port: 443
       targetPort: 8443
       nodePort: {{ .Values.service.httpsNodePort }}
-    - port: 80
-      name: http
+    - name: http
       protocol: TCP
+      port: 80
       targetPort: 8080
       nodePort: {{ .Values.service.httpNodePort }}
   type: NodePort

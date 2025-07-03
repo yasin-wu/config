@@ -9,11 +9,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: jenkins-role-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: edit  # 使用预定义角色（或自定义）
+  namespace: jenkins
 subjects:
   - kind: ServiceAccount
     name: jenkins-sa
     namespace: jenkins
+roleRef:
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+  name: edit  # 使用预定义角色（或自定义）

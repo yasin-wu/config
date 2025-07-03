@@ -9,9 +9,9 @@ spec:
   selector:
     app: nats
   ports:
-    - port: 4222
-      name: tcp
+    - name: tcp
       protocol: TCP
+      port: 4222
       targetPort: 4222
   {{- if eq .Values.mode "dev" }}
       nodePort: {{ .Values.service.nodePort }}

@@ -9,9 +9,9 @@ spec:
   selector:
     app: mongodb
   ports:
-    - port: 27017
-      name: tcp
+    - name: tcp
       protocol: TCP
+      port: 27017
       targetPort: 27017
   {{- if eq .Values.mode "dev" }}
       nodePort: {{ .Values.service.nodePort }}

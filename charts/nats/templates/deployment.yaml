@@ -19,9 +19,9 @@ spec:
       nodeName: {{ .Values.nats.nodeName }}
       {{- end }}
       containers:
-        - image: "{{ .Values.nats.image }}:{{ .Values.nats.tag }}"
+        - name: nats
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: nats
+          image: "{{ .Values.nats.image }}:{{ .Values.nats.tag }}"
           env:
             {{- include "common.env" . }}
           volumeMounts:

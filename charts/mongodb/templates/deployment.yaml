@@ -21,9 +21,9 @@ spec:
       nodeName: {{ .Values.mongodb.nodeName }}
       {{- end }}
       containers:
-        - image: "{{ .Values.mongodb.image }}:{{ .Values.mongodb.tag }}"
+        - name: mongodb
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: mongodb
+          image: "{{ .Values.mongodb.image }}:{{ .Values.mongodb.tag }}"
           env:
             {{- include "common.env" . }}
             - name: MONGODB_ROOT_USER
