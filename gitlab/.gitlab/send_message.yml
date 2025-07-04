@@ -5,17 +5,18 @@ failure_send:
     - ${RUNNER}
   script:
     - |
+      commit_message=$(echo "${CI_COMMIT_MESSAGE}" | grep -v '^[[:space:]]*$')
       curl ${NOTIFICATION} -H 'Content-Type: application/json' \
          -d '
          {
             "msgtype": "markdown",
             "markdown": {
-               "content":"'"**GitLab 通知**：<font color=RED>FAIL</font>
+               "content":"'"**GitLab 通知**：<font color=RED>FAILURE</font>
                 >项目: <font color=comment>${CI_PROJECT_URL}</font>
                 >分支: <font color=comment>${CI_COMMIT_BRANCH}</font>
                 >提交者: <font color=comment>${GITLAB_USER_EMAIL}</font>
                 >commit号: <font color=comment>${CI_COMMIT_SHA}</font>
-                >commit信息: <font color=comment>${CI_COMMIT_MESSAGE}</font>
+                >commit信息: <font color=comment>${commit_message}</font>
                 >单元测试和lint报告请点击:[报告](${CI_PROJECT_URL}/-/pipelines/${CI_PIPELINE_ID}/test_report)"'"
             }
         }'
@@ -26,6 +27,7 @@ success_send:
     - ${RUNNER}
   script:
     - |
+      commit_message=$(echo "${CI_COMMIT_MESSAGE}" | grep -v '^[[:space:]]*$')
       curl ${NOTIFICATION} -H 'Content-Type: application/json' \
          -d '
          {
@@ -36,10 +38,10 @@ success_send:
                 >分支: <font color=comment>${CI_COMMIT_BRANCH}</font>
                 >提交者: <font color=comment>${GITLAB_USER_EMAIL}</font>
                 >commit号: <font color=comment>${CI_COMMIT_SHA}</font>
-                >commit信息: <font color=comment>${CI_COMMIT_MESSAGE}</font>
+                >commit信息: <font color=comment>${commit_message}</font>
+                >单元测试和lint报告请点击:[报告](${CI_PROJECT_URL}/-/pipelines/${CI_PIPELINE_ID}/test_report)
                 >输出镜像: 
                       <font color=comment>yasin/app:${VERSION}</font>
-                      <font color=comment>yasin/app:latest</font>
-                >单元测试和lint报告请点击:[报告](${CI_PROJECT_URL}/-/pipelines/${CI_PIPELINE_ID}/test_report)"'"
+                      <font color=comment>yasin/app:latest</font>"'"
             }
         }'
