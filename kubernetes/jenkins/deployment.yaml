@@ -17,6 +17,10 @@ spec:
       serviceAccountName: jenkins-sa
       securityContext:
         fsGroup: 993 # docker用户组 more /etc/group |grep docker
+      hostAliases:
+        - hostnames:
+            - docker.com.cn
+          ip: 127.0.0.1
       containers:
         - name: jenkins
           imagePullPolicy: IfNotPresent
