@@ -2,9 +2,13 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jenkins-pvc
-  namespace: jenkins
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "2"
 spec:
-  volumeName: jenkins-cloud
+  volumeName: jenkins-pv
   storageClassName: local-path
   accessModes:
     - ReadWriteOnce

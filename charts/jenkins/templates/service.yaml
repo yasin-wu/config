@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: jenkins-service
-  namespace: jenkins
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     app: jenkins
@@ -11,9 +11,9 @@ spec:
       protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30000  # NodePort 范围 (30000-32767)
+      nodePort: {{ .Values.jenkins.httpNodePort }}
     - name: agent
       protocol: TCP
       port: 50000
       targetPort: 50000
-  type: NodePort  # 或 LoadBalancer
+  type: NodePort

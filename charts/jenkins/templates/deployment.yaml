@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jenkins
-  namespace: jenkins
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -18,21 +18,24 @@ spec:
       serviceAccountName: jenkins-sa
       securityContext:
         fsGroup: 993 # docker用户组 more /etc/group |grep docker
+      {{- if .Values.hostAliases }}
       hostAliases:
-        - hostnames:
-            - docker.com.cn
-          ip: 127.0.0.1
+        {{- with .Values.hostAliases }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
       initContainers:
         - name: fix-ssh-permissions
-          image: busybox
+          image: {{ .Values.busybox.image }}:{{ .Values.busybox.tag }}
+          imagePullPolicy: IfNotPresent
           command: [ 'sh', '-c', 'chmod 600 /var/jenkins_home/.ssh/id_ed25519' ]
           volumeMounts:
             - name: jenkins-data
               mountPath: /var/jenkins_home
       containers:
         - name: jenkins
-          imagePullPolicy: IfNotPresent
-          image: yasin/jenkins:lts
+          image: {{ .Values.jenkins.image }}:{{ .Values.jenkins.tag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: TZ
               value: Asia/Shanghai

@@ -1,0 +1,13 @@
+imagePullPolicy: IfNotPresent
+localPath: /home/yasin/data/jenkins
+busybox:
+  image: busybox
+  tag: latest
+jenkins:
+  image: yasin/jenkins
+  tag: tls
+  httpNodePort: 30000
+hostAliases:
+  - ip: 127.0.0.1
+    hostnames:
+      - docker.com.cn

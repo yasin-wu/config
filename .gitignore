@@ -7,3 +7,4 @@
 /compose/elk/elasticsearch/node1/data/
 /compose/clickhouse/data/
 **/tmp/
+**/tpl/
