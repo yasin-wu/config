@@ -1,4 +1,5 @@
 # 生成SSH密钥: ssh-keygen -t ed25519 -f /var/jenkins_home/.ssh/id_ed25519
+# 报错:Permissions 0660 for '/var/jenkins_home/.ssh/id_ed25519' are too open, chmod 600 id_ed25519
 apiVersion: apps/v1
 kind: Deployment
 metadata:
