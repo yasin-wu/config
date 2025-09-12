@@ -22,6 +22,13 @@ spec:
         - hostnames:
             - docker.com.cn
           ip: 127.0.0.1
+      initContainers:
+        - name: fix-ssh-permissions
+          image: busybox
+          command: [ 'sh', '-c', 'chmod 600 /var/jenkins_home/.ssh/id_ed25519' ]
+          volumeMounts:
+            - name: jenkins-data
+              mountPath: /var/jenkins_home
       containers:
         - name: jenkins
           imagePullPolicy: IfNotPresent
