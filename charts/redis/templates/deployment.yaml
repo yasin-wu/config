@@ -8,6 +8,8 @@ metadata:
     component: database
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: redis
@@ -24,8 +26,26 @@ spec:
         - name: redis
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           image: "{{ .Values.redis.image }}:{{ .Values.redis.tag }}"
-          securityContext:
-            privileged: true
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "redis-cli -p $REDIS_PORT_NUMBER -a $REDIS_PASSWORD PING"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "redis-cli -p $REDIS_PORT_NUMBER -a $REDIS_PASSWORD PING"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             {{- include "common.env" . }}
             {{- if .Values.redis.password }}

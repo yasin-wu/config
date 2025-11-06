@@ -8,6 +8,8 @@ metadata:
     component: database
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: clickhouse
@@ -24,6 +26,28 @@ spec:
         - name: clickhouse
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           image: "{{ .Values.clickhouse.image }}:{{ .Values.clickhouse.tag }}"
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8123
+              httpHeaders:
+                - name: Authorization
+                  value: "Basic $(echo -n '$CLICKHOUSE_ADMIN_USER:$CLICKHOUSE_ADMIN_PASSWORD' | base64)"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8123
+              httpHeaders:
+                - name: Authorization
+                  value: "Basic $(echo -n '$CLICKHOUSE_ADMIN_USER:$CLICKHOUSE_ADMIN_PASSWORD' | base64)"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             {{- include "common.env" . }}
             - name: CLICKHOUSE_ADMIN_USER
