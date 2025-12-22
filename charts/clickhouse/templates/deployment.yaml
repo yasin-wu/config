@@ -61,8 +61,8 @@ spec:
             - name: config
               mountPath: /bitnami/clickhouse/etc
 {{/*            - name: data*/}}
-{{/*              mountPath: /bitnami/clickhouse/data*/}}
-{{/*              subPath: clickhouse/data*/}}
+{{/*              mountPath: /bitnami/clickhouse/data/*/}}
+{{/*              subPath: clickhouse/data/*/}}
       volumes:
         {{- include "common.volumes" . }}
         - name: config

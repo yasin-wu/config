@@ -57,7 +57,7 @@ spec:
           volumeMounts:
             {{- include "common.volumeMounts" . }}
 {{/*            - name: data*/}}
-{{/*              mountPath: /bitnami/mongodb/data*/}}
-{{/*              subPath: mongodb/data*/}}
+{{/*              mountPath: /bitnami/mongodb/data/*/}}
+{{/*              subPath: mongodb/data/*/}}
       volumes:
         {{- include "common.volumes" . }}

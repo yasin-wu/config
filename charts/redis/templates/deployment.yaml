@@ -63,7 +63,7 @@ spec:
           volumeMounts:
             {{- include "common.volumeMounts" . }}
 {{/*            - name: data*/}}
-{{/*              mountPath: /bitnami/redis/data*/}}
-{{/*              subPath: redis/data*/}}
+{{/*              mountPath: /bitnami/redis/data/*/}}
+{{/*              subPath: redis/data/*/}}
       volumes:
         {{- include "common.volumes" . }}

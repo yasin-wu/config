@@ -30,7 +30,7 @@ spec:
           volumeMounts:
             {{- include "common.volumeMounts" . }}
 {{/*            - name: data*/}}
-{{/*              mountPath: /bitnami/kafka/data*/}}
-{{/*              subPath: kafka/data*/}}
+{{/*              mountPath: /bitnami/kafka/data/*/}}
+{{/*              subPath: kafka/data/*/}}
       volumes:
         {{- include "common.volumes" . }}

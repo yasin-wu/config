@@ -43,7 +43,7 @@ spec:
               value: "-Dhudson.model.UpdateCenter.never=true"
           volumeMounts:
             - name: jenkins-data
-              mountPath: /var/jenkins_home #admin password ./secrets/initialAdminPassword
+              mountPath: /var/jenkins_home/ #admin password ./secrets/initialAdminPassword
             - name: docker-sock
               mountPath: /var/run/docker.sock
             - name: docker-bin

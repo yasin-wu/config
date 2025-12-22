@@ -1,5 +1,5 @@
 imagePullPolicy: IfNotPresent
-localPath: /home/yasin/data/jenkins
+localPath: /home/yasin/data/jenkins/
 busybox:
   image: busybox
   tag: latest

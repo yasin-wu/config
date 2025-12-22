@@ -33,9 +33,9 @@ spec:
               mountPath: /opt/bitnami/nginx/conf/nginx.conf
               subPath: nginx.conf
             - name: nginx-confd
-              mountPath: /opt/bitnami/nginx/conf/conf.d
+              mountPath: /opt/bitnami/nginx/conf/conf.d/
             - name: nginx-ca
-              mountPath: /home/yasin/nginx/ca
+              mountPath: /home/yasin/nginx/ca/
       volumes:
         {{- include "common.volumes" . }}
 {{/*        {{- include "webRoot.volumes" . }}*/}}

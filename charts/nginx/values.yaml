@@ -23,11 +23,11 @@ volumes:
 webRoot:
   volumeMounts:
     - name: web-root
-      mountPath: /home/yasin/data/web-root
+      mountPath: /home/yasin/data/web-root/
   volumes:
     - name: web-root
       hostPath:
-        path: /home/yasin/data/web-root
+        path: /home/yasin/data/web-root/
 nginx:
   nodeName:
   image: bitnami/nginx

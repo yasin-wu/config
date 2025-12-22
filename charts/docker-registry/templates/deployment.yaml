@@ -41,12 +41,12 @@ spec:
             - name: timezone
               mountPath: /etc/localtime
             - name: data
-              mountPath: /docker/registry/data
-              subPath: registry/data
+              mountPath: /docker/registry/data/
+              subPath: registry/data/
             - name: certs
-              mountPath: /docker/registry/certs
+              mountPath: /docker/registry/certs/
             - name: auth
-              mountPath: /docker/registry/auth
+              mountPath: /docker/registry/auth/
       volumes:
         - name: timezone
           hostPath:

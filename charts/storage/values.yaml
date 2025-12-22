@@ -7,5 +7,5 @@ storage:
   storageClass: local-path
   nfsServer:
   nfsPath:
-  localPath: /home/yasin/data
+  localPath: /home/yasin/data/
   localPathNode: master
