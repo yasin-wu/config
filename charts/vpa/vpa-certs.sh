@@ -5,8 +5,7 @@ namespace="vpa-system"
 rm -rf "${cert_dir}"
 mkdir -p "${cert_dir}"
 
-# 创建证书配置文件
-cat > "${cert_dir}/vpa-cert-config.cnf" <<'EOF'
+cat > "${cert_dir}/vpa-cert-config.cnf" <<EOF
 [ req ]
 default_bits = 2048
 prompt = no
@@ -15,7 +14,7 @@ distinguished_name = dn
 req_extensions = req_ext
 
 [ dn ]
-CN = vpa-webhook.vpa-system.svc
+CN = vpa-webhook.${namespace}.svc
 O = Kubernetes
 OU = VPA
 
@@ -26,9 +25,9 @@ extendedKeyUsage = serverAuth
 
 [ alt_names ]
 DNS.1 = vpa-webhook
-DNS.2 = vpa-webhook.vpa-system
-DNS.3 = vpa-webhook.vpa-system.svc
-DNS.4 = vpa-webhook.vpa-system.svc.cluster.local
+DNS.2 = vpa-webhook.${namespace}
+DNS.3 = vpa-webhook.${namespace}.svc
+DNS.4 = vpa-webhook.${namespace}.svc.cluster.local
 EOF
 
 openssl genrsa -out "${cert_dir}/ca.key" 2048
