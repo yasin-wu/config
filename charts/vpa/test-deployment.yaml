@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-vpa-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-vpa-test
+  template:
+    metadata:
+      labels:
+        app: nginx-vpa-test
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
