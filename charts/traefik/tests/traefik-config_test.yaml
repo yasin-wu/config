@@ -1,0 +1,1351 @@
+suite: Traefik configuration
+templates:
+  - deployment.yaml
+tests:
+  - it: should have no custom arguments when specified by default
+    set:
+      additionalArguments:
+        - --the.force.is.with.me=true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--the.force.is.with.me=true"
+
+  - it: should not have ingress nginx provider enabled by default
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingressnginx"
+        template: deployment.yaml
+
+  - it: should have namespace restriction if rbac is namespaced
+    set:
+      rbac:
+        namespaced: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.namespaces=NAMESPACE"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.namespaces=NAMESPACE"
+  - it: should have a custom string of watched namespaces when specified in configuration
+    set:
+      rbac:
+        namespaced: true
+      providers:
+        kubernetesCRD:
+          enabled: true
+          allowCrossNamespace: true
+          namespaces:
+            - "foo"
+            - "bar"
+        kubernetesIngress:
+          enabled: true
+          namespaces:
+            - "foo"
+            - "bar"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.namespaces=foo,bar"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.allowCrossNamespace=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.namespaces=foo,bar"
+  - it: should not have the watched namespace when provider is disabled
+    set:
+      providers:
+        kubernetesCRD:
+          enabled: false
+          namespaces:
+            - "foo"
+            - "bar"
+        kubernetesIngress:
+          enabled: false
+          namespaces:
+            - "foo"
+            - "bar"
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.namespaces"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.namespaces"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd"
+  - it: should have enabled published Kubernetes service when default configuration
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.ingressendpoint.publishedservice=NAMESPACE/RELEASE-NAME-traefik"
+  - it: should use override namespace when specified
+    set:
+      namespaceOverride: foo
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.ingressendpoint.publishedservice=foo/RELEASE-NAME-traefik"
+  - it: should be possible to disable published Kubernetes service when specified in configuration
+    set:
+      providers:
+        kubernetesIngress:
+          publishedService:
+            enabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.ingressendpoint.publishedservice=NAMESPACE/RELEASE-NAME-traefik"
+  - it: should have a custom string in published Kubernetes service when specified in configuration
+    set:
+      providers:
+        kubernetesIngress:
+          publishedService:
+            enabled: true
+            pathOverride: foo/bar
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.ingressendpoint.publishedservice=foo/bar"
+  - it: should not set default publishedService when service is disabled
+    set:
+      service:
+        enabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.ingressendpoint.publishedservice=NAMESPACE/RELEASE-NAME-traefik"
+  - it: should set publishedService when service is disabled but publishedservice is enabled and path override is set
+    set:
+      service:
+        enabled: false
+      providers:
+        kubernetesIngress:
+          publishedService:
+            enabled: true
+            pathOverride: "traefik/custom-service"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.ingressendpoint.publishedservice=traefik/custom-service"
+  - it: should not set default statusAddress when service is disabled
+    set:
+      service:
+        enabled: false
+      providers:
+        kubernetesGateway:
+          enabled: true
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.service.name=RELEASE-NAME-traefik"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.service.namespace=NAMESPACE"
+  - it: should not set default statusAddress when disabled
+    set:
+      providers:
+        kubernetesGateway:
+          enabled: true
+          statusAddress:
+            service:
+              enabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.service.name=RELEASE-NAME-traefik"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.service.namespace=NAMESPACE"
+  - it: should be possible to set statusAddress fields
+    set:
+      providers:
+        kubernetesGateway:
+          enabled: true
+          statusAddress:
+            ip: 1.2.3.4
+            hostname: example.net
+            service:
+              name: foo
+              namespace: default
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.ip=1.2.3.4"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.hostname=example.net"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.service.name=foo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.statusaddress.service.namespace=default"
+  - it: should allow cross namespace services when specified in configuration
+    set:
+      providers:
+        kubernetesCRD:
+          allowCrossNamespace: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.allowCrossNamespace=true"
+  - it: should allow external name services when specified in configuration
+    set:
+      providers:
+        kubernetesIngress:
+          allowExternalNameServices: true
+        kubernetesCRD:
+          allowExternalNameServices: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.allowExternalNameServices=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.allowExternalNameServices=true"
+  - it: should allow empty services when specified in configuration
+    set:
+      providers:
+        kubernetesIngress:
+          allowEmptyServices: true
+        kubernetesCRD:
+          allowEmptyServices: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.allowEmptyServices=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.allowEmptyServices=true"
+  - it: should match ingresses based on input label
+    set:
+      providers:
+        kubernetesIngress:
+          labelSelector: environment=devel
+        kubernetesCRD:
+          labelSelector: environment=devel
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.labelSelector=environment=devel"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.labelSelector=environment=devel"
+  - it: should match ingresses based on ingressClass
+    set:
+      providers:
+        kubernetesIngress:
+          ingressClass: foo
+        kubernetesCRD:
+          ingressClass: foo
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.ingressClass=foo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.ingressClass=foo"
+  - it: should be possible to set nativeLBByDefault
+    set:
+      providers:
+        kubernetesIngress:
+          nativeLBByDefault: true
+        kubernetesCRD:
+          nativeLBByDefault: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.nativeLBByDefault=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.nativeLBByDefault=true"
+  - it: should not set nativeLBByDefault by default
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.nativeLBByDefault=true"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.nativeLBByDefault=true"
+  - it: should be possible to set strictPrefixMatching
+    set:
+      providers:
+        kubernetesIngress:
+          strictPrefixMatching: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.strictPrefixMatching=true"
+
+  - it: should have a plugin storage and args if the experimental feature is enabled
+    set:
+      experimental:
+        plugins:
+          demo:
+            moduleName: github.com/traefik/plugindemo
+            version: v0.2.1
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[2]
+          value:
+            name: plugins
+            emptyDir: {}
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: plugins
+            mountPath: "/plugins-storage"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.moduleName=github.com/traefik/plugindemo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.version=v0.2.1"
+
+  - it: should have a plugin hash option, if configured
+    set:
+      experimental:
+        plugins:
+          demo:
+            moduleName: github.com/traefik/plugindemo
+            version: v0.2.1
+            hash: 948a0f84e2d7708b60fe7e29a2d800fb3d1512c8e1eb386c69ff7ec743aa5287
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.hash=948a0f84e2d7708b60fe7e29a2d800fb3d1512c8e1eb386c69ff7ec743aa5287"
+
+  - it: should be possible to configure a customized plugin storage
+    set:
+      experimental:
+        plugins:
+          demo:
+            moduleName: github.com/traefik/plugindemo
+            version: v0.2.1
+      deployment:
+        additionalVolumes:
+          - name: plugins
+            hostPath:
+              path: /data/
+              type: Directory
+      additionalVolumeMounts:
+        - name: plugins
+          mountPath: /plugins-storage
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[2]
+          value:
+            hostPath:
+              path: /data/
+              type: Directory
+            name: plugins
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: plugins
+            mountPath: "/plugins-storage"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.moduleName=github.com/traefik/plugindemo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.version=v0.2.1"
+  - it: should fail gracefully when using old syntax
+    set:
+      experimental:
+        plugins:
+          test:
+            foo: bar
+    asserts:
+      - failedTemplate:
+          errorMessage: "ERROR: plugin test is missing moduleName/version keys!"
+
+  - it: should fail gracefully on missing plugins information
+    set:
+      experimental:
+        plugins:
+          demo:
+            moduleName: github.com/traefik/plugindemo
+    asserts:
+      - failedTemplate:
+          errorMessage: "ERROR: plugin demo is missing moduleName/version keys!"
+
+  - it: should create correct volumes, mounts and args for local plugins
+    set:
+      experimental:
+        localPlugins:
+          local-demo:
+            moduleName: github.com/traefik/plugindemo
+            mountPath: /plugins-local/src/github.com/traefik/plugindemo
+            hostPath: /plugins-local/src/github.com/traefik/plugindemo
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.local-demo.moduleName=github.com/traefik/plugindemo"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: local-demo
+            mountPath: "/plugins-local/src/github.com/traefik/plugindemo"
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: local-demo
+            hostPath:
+              path: "/plugins-local/src/github.com/traefik/plugindemo"
+
+  - it: should support multiple local plugins
+    set:
+      experimental:
+        localPlugins:
+          foo:
+            moduleName: github.com/traefik/foo
+            mountPath: /plugins-local/src/github.com/traefik/foo
+            hostPath: /plugins-local/src/github.com/traefik/foo
+          bar:
+            moduleName: github.com/traefik/bar
+            mountPath: /plugins-local/src/github.com/traefik/bar
+            hostPath: /plugins-local/src/github.com/traefik/bar
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.foo.moduleName=github.com/traefik/foo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.bar.moduleName=github.com/traefik/bar"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: foo
+            mountPath: "/plugins-local/src/github.com/traefik/foo"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: bar
+            mountPath: "/plugins-local/src/github.com/traefik/bar"
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: foo
+            hostPath:
+              path: "/plugins-local/src/github.com/traefik/foo"
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: bar
+            hostPath:
+              path: "/plugins-local/src/github.com/traefik/bar"
+
+  - it: should not have local plugins arg when no local plugins are specified
+    set:
+      experimental:
+        localPlugins: {}
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins"
+
+  - it: should fail gracefully on missing local plugins information
+    set:
+      experimental:
+        localPlugins:
+          local-demo:
+            mountPath: /plugins-local/src/github.com/traefik/plugindemo
+            hostPath: /plugins-local/src/github.com/traefik/plugindemo
+    asserts:
+      - failedTemplate:
+          errorMessage: "ERROR: local plugin local-demo is missing moduleName!"
+
+  - it: should create correct volumes, mounts and args for new structured localPlugins and legacy hostPath
+    set:
+      experimental:
+        localPlugins:
+          # Legacy hostPath (backward compatibility)
+          legacy-host:
+            moduleName: github.com/traefik/legacyhost
+            mountPath: /plugins-local/src/github.com/traefik/legacyhost
+            hostPath: /plugins-legacy
+          # New structured plugins
+          inline-demo:
+            moduleName: github.com/traefik/inlinedemo
+            mountPath: /plugins-local/src/github.com/traefik/inlinedemo
+            type: inlinePlugin
+            source:
+              main.go: "package main"
+              go.mod: |
+                module github.com/traefik/inlinedemo
+                go 1.23
+              .traefik.yml: |
+                displayName: Inline Demo
+                type: middleware
+                import: github.com/traefik/inlinedemo
+                summary: |
+                  This is a simple plugin that prints "Hello, World!" to the response.
+                testData:
+                  message: "Hello, World!"
+
+          host-demo:
+            moduleName: github.com/traefik/hostdemo
+            mountPath: /plugins-local/src/github.com/traefik/hostdemo
+            type: hostPath
+            hostPath: /plugins-local/src/github.com/traefik/hostdemo
+          pvc-demo:
+            moduleName: github.com/traefik/pvcdemo
+            mountPath: /plugins-local/src/github.com/traefik/pvcdemo
+            type: localPath
+            volumeName: plugin-storage
+            subPath: plugins/pvcdemo
+      deployment:
+        additionalVolumes:
+          - name: plugin-storage
+            persistentVolumeClaim:
+              claimName: plugin-storage-pvc
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.legacy-host.moduleName=github.com/traefik/legacyhost"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.inline-demo.moduleName=github.com/traefik/inlinedemo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.host-demo.moduleName=github.com/traefik/hostdemo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.pvc-demo.moduleName=github.com/traefik/pvcdemo"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: legacy-host
+            mountPath: "/plugins-local/src/github.com/traefik/legacyhost"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: inline-demo
+            mountPath: "/plugins-local/src/github.com/traefik/inlinedemo"
+            readOnly: true
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: host-demo
+            mountPath: "/plugins-local/src/github.com/traefik/hostdemo"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: plugin-storage
+            mountPath: "/plugins-local/src/github.com/traefik/pvcdemo"
+            subPath: plugins/pvcdemo
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: legacy-host
+            hostPath:
+              path: "/plugins-legacy"
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: inline-demo
+            configMap:
+              name: RELEASE-NAME-traefik-local-plugin-inline-demo
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: host-demo
+            hostPath:
+              path: "/plugins-local/src/github.com/traefik/hostdemo"
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: plugin-storage
+            persistentVolumeClaim:
+              claimName: plugin-storage-pvc
+
+  - it: should allow useUnsafe option for plugins and localPlugins
+    set:
+      experimental:
+        plugins:
+          demo:
+            moduleName: github.com/traefik/plugindemo
+            version: v0.2.1
+            settings:
+              useUnsafe: true
+        localPlugins:
+          local-demo:
+            moduleName: github.com/traefik/plugindemo
+            mountPath: /plugins-local/src/github.com/traefik/plugindemo
+            hostPath: /plugins-local/src/github.com/traefik/plugindemo
+            settings:
+              useUnsafe: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.moduleName=github.com/traefik/plugindemo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.version=v0.2.1"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.plugins.demo.settings.useUnsafe=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.local-demo.moduleName=github.com/traefik/plugindemo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.localPlugins.local-demo.settings.useUnsafe=true"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: local-demo
+            mountPath: "/plugins-local/src/github.com/traefik/plugindemo"
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: local-demo
+            hostPath:
+              path: "/plugins-local/src/github.com/traefik/plugindemo"
+
+  - it: should have tls configuration args when specified in values.yaml for port
+    set:
+      ports:
+        websecure:
+          tls:
+            enabled: true
+            options: "foo"
+            certResolver: "certResolverFoo"
+            domains:
+              - main: "sub.domain.tld"
+                sans:
+                  - "alt1.domain.tld"
+                  - "alt2.domain.tld"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.http.tls=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.http.tls.options=foo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.http.tls.certResolver=certResolverFoo"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.http.tls.domains[0].main=sub.domain.tld"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.http.tls.domains[0].sans=alt1.domain.tld,alt2.domain.tld"
+
+  - it: should have additional volumeMounts
+    set:
+      additionalVolumeMounts:
+        - name: foo-logs
+          mountPath: /var/log/traefik
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[2].name
+          value: foo-logs
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[2].mountPath
+          value: /var/log/traefik
+  - it: should be possible to template the additionalVolumeMounts
+    set:
+      randomName: foo
+      additionalVolumeMounts:
+        - name: foo-logs
+          mountPath: /var/log/{{ .Values.randomName }}
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[2].mountPath
+          value: /var/log/foo
+
+  - it: should set custom probe port
+    set:
+      additionalArguments:
+        - --ping
+        - --ping.entrypoint=web
+      deployment:
+        healthchecksPort: 9001
+      ports:
+        traefik:
+          port: 9000
+          exposedPort: 9000
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: 9001
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: "/ping"
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: 9001
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.scheme
+          value: "HTTP"
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: "/ping"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--ping"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--ping.entrypoint=web"
+  - it: should set custom probe scheme
+    set:
+      additionalArguments:
+        - --ping
+        - --ping.entrypoint=websecure
+      deployment:
+        healthchecksScheme: HTTPS
+        healthchecksPort: 8443
+      ports:
+        traefik:
+          port: 9000
+          exposedPort: 9000
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: 8443
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: 8443
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.scheme
+          value: "HTTPS"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--ping"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--ping.entrypoint=websecure"
+  - it: should set custom probe paths
+    set:
+      additionalArguments:
+        - --ping
+      deployment:
+        readinessPath: /ready
+        livenessPath: /alive
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /alive
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /ready
+  - it: should enable tls on websecure entrypoints by default
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.http.tls=true"
+  - it: should be possible to disable tls on websecure entrypoint
+    set:
+      ports:
+        websecure:
+          tls:
+            enabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.http.tls=true"
+  - it: should allow to set namespace on providers by default, without rbac.namespaced
+    set:
+      rbac:
+        namespaced: false
+      providers:
+        kubernetesCRD:
+          enabled: true
+          namespaces: [ns1, ns2]
+        kubernetesIngress:
+          enabled: true
+          namespaces: [ns3, ns4]
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.namespaces=ns1,ns2"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.namespaces=ns3,ns4"
+  - it: should not set namespace on providers by default
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.namespaces=NAMESPACE"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.namespaces=NAMESPACE"
+  - it: should have forwardedHeaders and proxyProtocol trustedIPs configuration args when specified in values.yaml for port
+    set:
+      ports:
+        websecure:
+          forwardedHeaders:
+            trustedIPs:
+              - 127.0.0.1/32
+              - 192.168.1.7
+          proxyProtocol:
+            trustedIPs:
+              - 127.0.0.1/32
+              - 192.168.1.8
+        web:
+          forwardedHeaders:
+            trustedIPs:
+              - 127.0.0.1/32
+              - 192.168.1.9
+          proxyProtocol:
+            trustedIPs:
+              - 127.0.0.1/32
+              - 192.168.1.10
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.forwardedHeaders.trustedIPs=127.0.0.1/32,192.168.1.7"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.proxyProtocol.trustedIPs=127.0.0.1/32,192.168.1.8"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.forwardedHeaders.insecure"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.proxyProtocol.insecure"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,192.168.1.9"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.web.proxyProtocol.trustedIPs=127.0.0.1/32,192.168.1.10"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.web.forwardedHeaders.insecure"
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.web.proxyProtocol.insecure"
+  - it: should have forwardedHeaders and proxyProtocol insecure configuration args when specified in values.yaml for port
+    set:
+      ports:
+        websecure:
+          forwardedHeaders:
+            insecure: true
+          proxyProtocol:
+            insecure: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.forwardedHeaders.insecure"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.proxyProtocol.insecure"
+  - it: should have multiple transport configuration args when specified in values.yaml for port
+    set:
+      ports:
+        websecure:
+          transport:
+            respondingTimeouts:
+              readTimeout: 60
+              writeTimeout: 0
+              idleTimeout: 180
+            lifeCycle:
+              requestAcceptGraceTimeout: 0
+              graceTimeOut: 10
+            keepAliveMaxRequests: 0
+            keepAliveMaxTime: 0
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.respondingTimeouts.readTimeout=60"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.respondingTimeouts.writeTimeout=0"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.respondingTimeouts.idleTimeout=180"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.lifeCycle.requestAcceptGraceTimeout=0"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.lifeCycle.graceTimeOut=10"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.keepAliveMaxRequests=0"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.keepAliveMaxTime=0"
+  - it: should have a single transport configuration arg when specified in values.yaml for port
+    set:
+      ports:
+        websecure:
+          transport:
+            respondingTimeouts:
+              readTimeout: 42s
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.transport.respondingTimeouts.readTimeout=42s"
+  - it: should be possible to configure access logs
+    set:
+      logs:
+        access:
+          enabled: true
+          format: json
+          filePath: "/data/log"
+          bufferingSize: 100
+          addInternals: true
+          filters:
+            statuscodes: "200,300-302"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--accesslog=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--accesslog.format=json"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--accesslog.filepath=/data/log"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--accesslog.bufferingsize=100"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--accesslog.addinternals"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--accesslog.filters.statuscodes=200,300-302"
+  - it: should set custom startupProbe
+    set:
+      startupProbe:
+        exec:
+          command:
+            - mycommand
+            - foo
+        initialDelaySeconds: 5
+        periodSeconds: 5
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.exec.command
+          value: ["mycommand", "foo"]
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.initialDelaySeconds
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.periodSeconds
+          value: 5
+  - it: should set disableIngressClassLookup if version is v3 and disableIngressClassLookup is true
+    set:
+      rbac:
+        namespaced: true
+      providers:
+        kubernetesIngress:
+          disableIngressClassLookup: true
+      image:
+        tag: v3.0.0-beta3
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.disableIngressClassLookup=true"
+  - it: should not set disableIngressClassLookup if version is >= v3.1.5+ and rbac are namespaced
+    set:
+      rbac:
+        namespaced: true
+      image:
+        tag: v3.1.5
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.disableClusterScopeResources=true"
+
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.disableIngressClassLookup=true"
+  - it: should set disableIngressClassLookup if version is < v3.1.5+ and rbac are namespaced
+    set:
+      rbac:
+        namespaced: true
+      image:
+        tag: v3.1.4
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.disableClusterScopeResources=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.disableIngressClassLookup=true"
+  - it: should set disableClusterScopeResources when version > v3.1.2+ on both providers
+    set:
+      rbac:
+        namespaced: true
+      image:
+        tag: v3.1.2
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.disableClusterScopeResources=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.disableClusterScopeResources=true"
+  - it: should set disableClusterScopeResources when version > v3.1.2+ only on crd enabled provider
+    set:
+      rbac:
+        namespaced: true
+      providers:
+        kubernetesIngress:
+          enabled: false
+      image:
+        tag: v3.1.2
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetescrd.disableClusterScopeResources=true"
+  - it: should set disableClusterScopeResources when version > v3.1.2+ only on ingress enabled provider
+    set:
+      rbac:
+        namespaced: true
+      providers:
+        kubernetesCRD:
+          enabled: false
+      image:
+        tag: v3.1.2
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesingress.disableClusterScopeResources=true"
+  - it: kubernetesGateway should be able to watch specified namespaces
+    set:
+      providers:
+        kubernetesGateway:
+          enabled: true
+          namespaces:
+            - "foo"
+            - "bar"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.namespaces=foo,bar"
+  - it: kubernetesGateway should add specified configuration
+    set:
+      providers:
+        kubernetesGateway:
+          enabled: true
+          experimentalChannel: true
+          nativeLBByDefault: true
+          labelSelector: "app=traefik"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.experimentalchannel=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.labelSelector=app=traefik"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.kubernetesgateway.nativeLBByDefault=true"
+  - it: knative should be able to watch specified namespaces
+    set:
+      providers:
+        knative:
+          enabled: true
+          namespaces:
+            - "foo"
+            - "bar"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--providers.knative.namespaces=foo,bar"
+  - it: should be possible to allow ACME bypass
+    set:
+      ports:
+        websecure:
+          allowACMEByPass: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--entryPoints.websecure.allowACMEByPass=true"
+  - it: should fail when setting ACME bypass with Proxy v3.1.0
+    set:
+      image:
+        tag: v3.1.0
+      ports:
+        websecure:
+          allowACMEByPass: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "ERROR: allowACMEByPass has been introduced with Traefik v3.1.3+"
+  - it: should be possible to configure Traefik Hub additionalTraceHeaders
+    set:
+      image:
+        registry: "ghcr.io"
+        repository: "traefik/traefik-hub"
+        tag: v3.9.0
+      tracing:
+        otlp:
+          enabled: true
+      hub:
+        token: "xxx"
+        tracing:
+          additionalTraceHeaders:
+            enabled: true
+            traceContext:
+              parentId: "parentId"
+              traceId: "traceId"
+              traceParent: "traceParent"
+              traceState: "traceState"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.tracing.additionalTraceHeaders.traceContext.parentId=parentId"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.tracing.additionalTraceHeaders.traceContext.traceId=traceId"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.tracing.additionalTraceHeaders.traceContext.traceParent=traceParent"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.tracing.additionalTraceHeaders.traceContext.traceState=traceState"
+  - it: should be possible to configure Traefik Hub microcks provider
+    set:
+      image:
+        tag: v3.7.0
+      tracing:
+        otlp:
+          enabled: true
+      hub:
+        token: "xxx"
+        providers:
+          microcks:
+            enabled: true
+            endpoint: "http://microcks.svc"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.microcks.endpoint=http://microcks.svc"
+  - it: should be possible to configure Traefik Hub consulCatalogEnterprise provider
+    set:
+      image:
+        tag: v3.9.0
+      tracing:
+        otlp:
+          enabled: true
+      hub:
+        token: "xxx"
+        providers:
+          consulCatalogEnterprise:
+            enabled: true
+            cache: true
+            connectAware: true
+            connectByDefault: true
+            constraints: "constraints"
+            defaultRule: "defaultRule"
+            endpoint:
+              address: "address"
+              datacenter: "datacenter"
+              endpointWaitTime: 1
+              httpauth:
+                password: "password"
+                username: "username"
+              scheme: "scheme"
+              tls:
+                ca: "ca"
+                cert: "cert"
+                insecureSkipVerify: true
+                key: "key"
+              token: "token"
+            exposedByDefault: false
+            namespaces: "namespaces"
+            partition: "partition"
+            prefix: "prefix"
+            refreshInterval: 2
+            requireConsistent: true
+            serviceName: "serviceName"
+            stale: true
+            strictChecks: "strictChecks"
+            watch: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.cache=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.connectAware=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.connectByDefault=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.constraints=constraints"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.defaultRule=defaultRule"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.address=address"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.datacenter=datacenter"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.endpointWaitTime=1"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.httpauth.password=password"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.httpauth.username=username"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.scheme=scheme"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.tls.ca=ca"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.tls.cert=cert"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.tls.insecureSkipVerify=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.tls.key=key"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.endpoint.token=token"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.namespaces=namespaces"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.partition=partition"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.prefix=prefix"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.refreshInterval=2"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.requireConsistent=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.serviceName=serviceName"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.stale=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.strictChecks=strictChecks"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.providers.consulCatalogEnterprise.watch=true"
+  - it: should be possible to configure Traefik Hub plugin sources
+    set:
+      image:
+        tag: v3.18.0
+      hub:
+        token: "xxx"
+        pluginRegistry:
+          sources:
+            plugin1:
+              baseModuleName: "gitlab.company.com"
+              gitlab:
+                token: "glpat-xxxxxxxxxxxxxxxxxxxx"
+                url: "https://gitlab.company.com"
+            plugin2:
+              baseModuleName: "github.enterprise.local"
+              github:
+                token: "ghp_xxxxxxxxxxxxxxxxxxxx"
+                enterprise:
+                  url: "https://github.enterprise.local"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin1=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin1.basemodulename=gitlab.company.com"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin1.gitlab.url=https://gitlab.company.com"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin1.gitlab.token=glpat-xxxxxxxxxxxxxxxxxxxx"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin2=true"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin2.basemodulename=github.enterprise.local"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin2.github.enterprise.url=https://github.enterprise.local"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--hub.pluginregistry.sources.plugin2.github.token=ghp_xxxxxxxxxxxxxxxxxxxx"
+  - it: should enable experimental otlpLogs when specified
+    set:
+      experimental:
+        otlpLogs: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.otlpLogs=true"
+  - it: should not enable experimental otlpLogs by default
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].args
+          content: "--experimental.otlpLogs=true"
+  - it: should fail on typo with providers
+    set:
+      providers:
+        kubernetescrd: # typo here
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorPattern: "values don't meet the specifications of the schema"
+  - it: should fail on typo with kubernetescrd provider settings
+    set:
+      providers:
+        kubernetesCRD:
+          allowCrossNmespace: true # typo here
+    asserts:
+      - failedTemplate:
+          errorPattern: "values don't meet the specifications of the schema"
+  - it: should fail on typo with kubernetesIngress provider settings
+    set:
+      providers:
+        kubernetesIngress:
+          nmespaces: [ "foobar"] # typo here
+    asserts:
+      - failedTemplate:
+          errorPattern: "values don't meet the specifications of the schema"
+  - it: should fail on typo with kubernetesGateway provider settings
+    set:
+      providers:
+        kubernetesGateway:
+          labelSlector: "foo=bar" # typo here
+    asserts:
+      - failedTemplate:
+          errorPattern: "values don't meet the specifications of the schema"
+  - it: should fail on typo with kubernetesIngressNginx provider settings
+    set:
+      providers:
+        kubernetesIngressNginx:
+          namespaces: [ "shouldfail" ] # typo here
+    asserts:
+      - failedTemplate:
+          errorPattern: "values don't meet the specifications of the schema"
+  - it: should fail on typo with file provider settings
+    set:
+      providers:
+        file:
+          contnt: "foobar" # typo here
+    asserts:
+      - failedTemplate:
+          errorPattern: "values don't meet the specifications of the schema"
