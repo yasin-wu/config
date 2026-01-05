@@ -1,0 +1,57 @@
+## user: SYSDBA
+## password: SYSDBA001
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dm
+  namespace: dm
+  labels:
+    app: dm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dm
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dm
+    spec:
+      containers:
+        - name: dm
+          imagePullPolicy: IfNotPresent
+          image: "if010/dameng:latest"
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: PAGE_SIZE
+              value: "16"
+            - name: LD_LIBRARY_PATH
+              value: /opt/dmdbms/bin
+            - name: EXTENT_SIZE
+              value: "32"
+            - name: BLANK_PAD_MODE
+              value: "1"
+            - name: LOG_SIZE
+              value: "1024"
+            - name: UNICODE_FLAG
+              value: "1"
+            - name: LENGTH_IN_CHAR
+              value: "1"
+            - name: INSTANCE_NAME
+              value: "dm8_test"
+          volumeMounts:
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: data
+              mountPath: /opt/dmdbms/data/
+      volumes:
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+        - name: data
+          hostPath:
+            path: /home/yasin/data/dm8/
