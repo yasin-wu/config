@@ -20,7 +20,7 @@ spec:
         - name: mongodb
           image: bitnami/mongodb:5.0.5
           imagePullPolicy: IfNotPresent
-          command: [ '/bin/bash', '-c', '/opt/bitnami/scripts/mongodb/custom/startup.sh' ]
+          command: [ "/bin/bash", "-c", "/opt/bitnami/scripts/mongodb/custom/startup.sh" ]
           livenessProbe:
             exec:
               command:
