@@ -18,7 +18,7 @@ spec:
       containers:
         - name: time-syncer
           imagePullPolicy: IfNotPresent
-          image: "alpine:3.16.2"
+          image: "alpine:3.16.2" # apk add --no-cache tzdata
           command: [ "/bin/sh", "-c" ]
           args: [ "ping www.baidu.com" ]
           securityContext:
