@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: time-syncer
+  namespace: yasin-app
+  labels:
+    app: time-syncer
+spec:
+  selector:
+    matchLabels:
+      app: time-syncer
+  template:
+    metadata:
+      labels:
+        app: time-syncer
+    spec:
+      hostPID: true
+      containers:
+        - name: time-syncer
+          imagePullPolicy: IfNotPresent
+          image: "alpine:3.16.2"
+          command: [ "/bin/sh", "-c" ]
+          args: [ "ping www.baidu.com" ]
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_TIME
+                - SYS_NICE
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "100Mi"
+            limits:
+              cpu: "1"
+              memory: "200Mi"
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: NTP_SERVER
+              value: ""
+          volumeMounts:
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: data
+              mountPath: /home/yasin/ntp/
+      volumes:
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+        - name: data
+          hostPath:
+            path: /home/yasin/data/ntp/
