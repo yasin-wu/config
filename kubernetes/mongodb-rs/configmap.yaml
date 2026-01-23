@@ -1,0 +1,22 @@
+# mongodb-startup-script.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-startup-script
+  namespace: yasin-app
+data:
+  startup.sh: |
+    #!/bin/bash
+    HOSTNAME=$(hostname -s)
+
+    if [[ $HOSTNAME =~ ^mongodb-0$ ]]; then
+      export MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=""
+      export MONGODB_REPLICA_SET_MODE=primary
+    else
+      export MONGODB_ROOT_PASSWORD=""
+      export MONGODB_REPLICA_SET_MODE=secondary
+      export MONGODB_PRIMARY_HOST=mongodb-0.mongodb-headless.yasin-app.svc.cluster.local
+      export MONGODB_PRIMARY_PORT_NUMBER=27017
+    fi
+
+    exec /opt/bitnami/scripts/mongodb/entrypoint.sh /opt/bitnami/scripts/mongodb/run.sh

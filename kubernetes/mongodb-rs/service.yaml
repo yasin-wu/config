@@ -1,0 +1,35 @@
+# mongodb-headless-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-headless
+  namespace: yasin-app
+  labels:
+    app: mongodb
+spec:
+  clusterIP: None
+  ports:
+    - name: mongodb
+      port: 27017
+      targetPort: mongodb
+  selector:
+    app: mongodb
+---
+# mongodb-external-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-external
+  namespace: yasin-app
+  labels:
+    app: mongodb
+spec:
+  type: NodePort
+  ports:
+    - name: mongodb
+      port: 27017
+      targetPort: mongodb
+      nodePort: 32017
+  selector:
+    app: mongodb
+    statefulset.kubernetes.io/pod-name: mongodb-0  # 只选择主节点

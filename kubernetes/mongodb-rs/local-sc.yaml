@@ -1,0 +1,26 @@
+#  // kubectl get cm -n kube-system local-path-config -o yaml | yq eval '.data."config.json" |= (load("./mongodb/config.json") | to_string)' | kubectl apply -f -
+#    {
+#      "nodePathMap": [
+#        {
+#          "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
+#          "paths": [
+#            "/var/lib/rancher/k3s/storage",
+#            "/home/yasin/data/mongodb"
+#          ]
+#        }
+#      ],
+#      "storageClassMap": {
+#        "mongodb-local": {
+#          "pathPattern": [
+#            "/home/yasin/data/mongodb"
+#          ]
+#        }
+#      }
+#    }
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mongodb-local
+provisioner: rancher.io/local-path
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
