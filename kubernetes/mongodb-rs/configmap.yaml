@@ -11,10 +11,13 @@ data:
 
     if [[ $HOSTNAME =~ ^mongodb-0$ ]]; then
       export MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=""
-      export MONGODB_REPLICA_SET_MODE=primary
+      export MONGODB_REPLICA_SET_MODE="primary"
+    elif [[ $HOSTNAME =~ ^mongodb-2$ ]]; then
+      export MONGODB_ROOT_PASSWORD=""
+      export MONGODB_REPLICA_SET_MODE="arbiter"
     else
       export MONGODB_ROOT_PASSWORD=""
-      export MONGODB_REPLICA_SET_MODE=secondary
+      export MONGODB_REPLICA_SET_MODE="secondary"
     fi
 
     exec /opt/bitnami/scripts/mongodb/entrypoint.sh /opt/bitnami/scripts/mongodb/run.sh
