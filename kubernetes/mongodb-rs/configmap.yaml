@@ -15,8 +15,6 @@ data:
     else
       export MONGODB_ROOT_PASSWORD=""
       export MONGODB_REPLICA_SET_MODE=secondary
-      export MONGODB_PRIMARY_HOST=mongodb-0.mongodb-headless.yasin-app.svc.cluster.local
-      export MONGODB_PRIMARY_PORT_NUMBER=27017
     fi
 
     exec /opt/bitnami/scripts/mongodb/entrypoint.sh /opt/bitnami/scripts/mongodb/run.sh

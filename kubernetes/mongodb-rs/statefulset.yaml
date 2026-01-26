@@ -6,7 +6,7 @@ metadata:
   namespace: yasin-app
 spec:
   serviceName: mongodb-headless
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: mongodb
@@ -42,15 +42,29 @@ spec:
           env:
             - name: TZ
               value: Asia/Shanghai
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: MONGODB_REPLICA_SET_NAME
               value: "rs0"
-            - name: MONGODB_REPLICA_SET_HOSTS
-              value: "mongodb-0.mongodb-headless.yasin-app.svc.cluster.local,mongodb-1.mongodb-headless.yasin-app.svc.cluster.local,mongodb-2.mongodb-headless.yasin-app.svc.cluster.local"
+            - name: MONGODB_INITIAL_PRIMARY_HOST
+              value: "mongodb-0.mongodb-headless.$(MY_POD_NAMESPACE).svc.cluster.local"
+            - name: MONGODB_ADVERTISED_HOSTNAME
+              value: "$(MY_POD_NAME).mongodb-headless.$(MY_POD_NAMESPACE).svc.cluster.local"
+            - name: MONGODB_ROOT_USER
+              value: "root"
             - name: MONGODB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
                   key: root-password
+            - name: MONGODB_INITIAL_PRIMARY_ROOT_USER
+              value: "root"
             - name: MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -61,10 +75,6 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: replica-set-key
-            - name: MONGODB_ADVERTISED_HOSTNAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
           volumeMounts:
             - name: timezone
               mountPath: /etc/localtime
@@ -91,7 +101,7 @@ spec:
         name: mongodb-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "mongodb-local"
+        storageClassName: "local-path-custom"
         resources:
           requests:
             storage: 8Gi
