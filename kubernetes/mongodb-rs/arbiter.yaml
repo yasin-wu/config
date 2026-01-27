@@ -17,6 +17,27 @@ spec:
         app: mongodb-arbiter
     spec:
       terminationGracePeriodSeconds: 30
+      initContainers:
+        - name: check-health
+          image: bitnami/mongodb:5.0.5
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/bash", "-c", "/opt/bitnami/scripts/mongodb/custom/check-replicaset.sh" ]
+          env:
+            - name: MONGODB_REPLICA_SET_NAME
+              value: "rs0"
+            - name: MONGODB_INITIAL_PRIMARY_ROOT_USER
+              value: "root"
+            - name: MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: root-password
+            - name:  REPLICAS_COUNT
+              value: "2"
+          volumeMounts:
+            - name: health-check
+              mountPath: /opt/bitnami/scripts/mongodb/custom/check-replicaset.sh
+              subPath: check-replicaset.sh
       containers:
         - name: mongodb-arbiter
           image: bitnami/mongodb:5.0.5
@@ -78,3 +99,10 @@ spec:
         - name: timezone
           hostPath:
             path: /usr/share/zoneinfo/Asia/Shanghai
+        - name: health-check
+          configMap:
+            name: mongodb-script
+            defaultMode: 0777
+            items:
+              - key: check-replicaset.sh
+                path: check-replicaset.sh

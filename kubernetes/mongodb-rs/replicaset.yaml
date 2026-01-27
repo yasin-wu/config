@@ -92,7 +92,7 @@ spec:
             path: /usr/share/zoneinfo/Asia/Shanghai
         - name: startup
           configMap:
-            name: mongodb-startup-script
+            name: mongodb-script
             defaultMode: 0777
             items:
               - key: startup.sh
