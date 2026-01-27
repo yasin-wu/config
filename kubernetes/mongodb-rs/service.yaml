@@ -15,6 +15,23 @@ spec:
   selector:
     app: mongodb
 ---
+# mongodb-arbiter-headless-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-arbiter-headless
+  namespace: yasin-app
+  labels:
+    app: mongodb-arbiter
+spec:
+  clusterIP: None
+  ports:
+    - name: mongodb-arbiter
+      port: 27017
+      targetPort: 27017
+  selector:
+    app: mongodb-arbiter
+---
 # mongodb-external-service.yaml
 apiVersion: v1
 kind: Service

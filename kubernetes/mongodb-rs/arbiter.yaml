@@ -1,0 +1,80 @@
+# mongodb-arbiter.yaml
+# Start replicaset first
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-arbiter
+  namespace: yasin-app
+spec:
+  serviceName: mongodb-arbiter-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-arbiter
+  template:
+    metadata:
+      labels:
+        app: mongodb-arbiter
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: mongodb-arbiter
+          image: bitnami/mongodb:5.0.5
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - mongo
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - mongo
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MONGODB_REPLICA_SET_NAME
+              value: "rs0"
+            - name: MONGODB_INITIAL_PRIMARY_HOST
+              value: "mongodb-0.mongodb-headless.$(MY_POD_NAMESPACE).svc.cluster.local"
+            - name: MONGODB_ADVERTISED_HOSTNAME
+              value: "$(MY_POD_NAME).mongodb-arbiter-headless.$(MY_POD_NAMESPACE).svc.cluster.local"
+            - name: MONGODB_REPLICA_SET_MODE
+              value: arbiter
+            - name: MONGODB_INITIAL_PRIMARY_ROOT_USER
+              value: "root"
+            - name: MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: root-password
+            - name: MONGODB_REPLICA_SET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: replica-set-key
+          volumeMounts:
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai

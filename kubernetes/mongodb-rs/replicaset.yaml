@@ -1,4 +1,5 @@
-# mongodb-statefulset.yaml
+# mongodb-replicaset.yaml
+# kubectl exec -it -n yasin-app mongodb-0 -- mongo -uroot -pyasinwu --authenticationDatabase admin --eval 'rs.status()'
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
