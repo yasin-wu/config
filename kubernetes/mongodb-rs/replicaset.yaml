@@ -102,7 +102,7 @@ spec:
         name: mongodb-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "local-path-custom"
+        storageClassName: "local-path-yasin-app"
         resources:
           requests:
             storage: 8Gi

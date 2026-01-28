@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: local-path-provisioner-custom-service-account
-  namespace: kube-system
+  name: local-path-provisioner-service-account
+  namespace: yasin-app
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: local-path-provisioner-custom-role
+  name: local-path-provisioner-yasin-app-role
 rules:
   - apiGroups: [ "" ]
     resources: [ "nodes", "persistentvolumeclaims", "configmaps", "pods/log" ]
@@ -25,21 +25,21 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: local-path-provisioner-custom-bind
+  name: local-path-provisioner-yasin-app-bind
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: local-path-provisioner-custom-role
+  name: local-path-provisioner-yasin-app-role
 subjects:
   - kind: ServiceAccount
-    name: local-path-provisioner-custom-service-account
-    namespace: kube-system
+    name: local-path-provisioner-service-account
+    namespace: yasin-app
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: local-path-provisioner-custom
-  namespace: kube-system
+  name: local-path-provisioner
+  namespace: yasin-app
 spec:
   revisionHistoryLimit: 0
   strategy:
@@ -48,14 +48,14 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: local-path-provisioner-custom
+      app: local-path-provisioner
   template:
     metadata:
       labels:
-        app: local-path-provisioner-custom
+        app: local-path-provisioner
     spec:
       priorityClassName: "system-node-critical"
-      serviceAccountName: local-path-provisioner-custom-service-account
+      serviceAccountName: local-path-provisioner-service-account
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
@@ -66,7 +66,7 @@ spec:
           operator: "Exists"
           effect: "NoSchedule"
       containers:
-        - name: local-path-provisioner-custom
+        - name: local-path-provisioner
           image: "rancher/local-path-provisioner:v0.0.27"
           imagePullPolicy: IfNotPresent
           command:
@@ -75,7 +75,7 @@ spec:
             - --config
             - /etc/config/config.json
             - --provisioner-name
-            - rancher.io/local-path-custom
+            - yasin-app.cn/local-path
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config/
@@ -87,24 +87,24 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: local-path-custom-config
+            name: local-path-config
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: local-path-custom
+  name: local-path-yasin-app
   annotations:
     defaultVolumeType: "local"
     storageclass.kubernetes.io/is-default-class: "false"
-provisioner: rancher.io/local-path-custom
+provisioner: yasin-app.cn/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Retain
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: local-path-custom-config
-  namespace: kube-system
+  name: local-path-config
+  namespace: yasin-app
 data:
   config.json: |-
     {
@@ -131,6 +131,7 @@ data:
     kind: Pod
     metadata:
       name: helper-pod
+      namespace: yasin-app
     spec:
       containers:
         - name: helper-pod
