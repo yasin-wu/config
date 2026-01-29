@@ -1,24 +1,16 @@
 mode: product
-replicaCount: 1
+replicaCount: 2
 image:
+  repository: bitnami/mongodb
+  tag: "5.0.5"
   pullPolicy: IfNotPresent
-service:
-  nodePort: 32017
-  externalTrafficPolicy: Local
-env:
-  - name: TZ
-    value: Asia/Shanghai
-volumeMounts:
-  - name: timezone
-    mountPath: /etc/localtime
-    readOnly: true
-volumes:
-  - name: timezone
-    hostPath:
-      path: /usr/share/zoneinfo/Asia/Shanghai
 mongodb:
   nodeName:
-  image: bitnami/mongodb
-  tag: "5.0.5"
+  storageClassName: yasin-local-path
+  storage: 20Gi
+  externalNodePort: 32017
+  arbiterEnable: true
   rootUser: root
   rootPassword: Yasin_3467
+  replicaSetName: rs0
+  replicaSetKey: replicaKeyYasin

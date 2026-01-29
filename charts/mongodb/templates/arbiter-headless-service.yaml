@@ -1,0 +1,17 @@
+{{- if .Values.mongodb.arbiterEnable }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-arbiter-headless
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: mongodb-arbiter
+spec:
+  selector:
+    app: mongodb-arbiter
+  clusterIP: None
+  ports:
+    - name: mongodb-arbiter
+      port: 27017
+      targetPort: 27017
+  {{- end }}

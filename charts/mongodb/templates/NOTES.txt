@@ -2,12 +2,12 @@ Successfully installed {{ .Release.Name }} {{ .Chart.AppVersion }}.
 
 Check the status by running: kubectl get pod -n {{ .Release.Namespace }}
 
-Command '<>' Replace with the actual value:
-  List Deployments: kubectl get deploy -n {{ .Release.Namespace }}
-  Restart Deployment: kubectl rollout restart deploy -n {{ .Release.Namespace }} <deployment>
-  Edit Deployment: kubectl edit deploy -n {{ .Release.Namespace }} <deployment>
-  Stop Deployment: kubectl scale deploy -n {{ .Release.Namespace }} --replicas=0 <deployment>
-  Start Deployment: kubectl scale deploy -n {{ .Release.Namespace }} --replicas=1 <deployment>
+Common operation and maintenance commands:
+  List StatefulSets: kubectl get sts -n {{ .Release.Namespace }}
+  Restart StatefulSet: kubectl rollout restart sts -n {{ .Release.Namespace }} <sts>
+  Edit StatefulSet: kubectl edit sts -n {{ .Release.Namespace }} <sts>
+  Stop StatefulSet: kubectl scale sts -n {{ .Release.Namespace }} --replicas=0 <sts>
+  Start StatefulSet: kubectl scale sts -n {{ .Release.Namespace }} --replicas=1 <sts>
   List Pods: kubectl get pods -n {{ .Release.Namespace }}
   Restart Pod: kubectl delete pod -n {{ .Release.Namespace }} <pod>
   Get Pod details: kubectl describe pod -n {{ .Release.Namespace }} <pod>
@@ -15,3 +15,4 @@ Command '<>' Replace with the actual value:
   Exec Pod: kubectl exec -it -n {{ .Release.Namespace }} <pod> -- sh
   List ConfigMaps: kubectl get cm -n {{ .Release.Namespace }}
   Edit ConfigMap: kubectl edit cm -n {{ .Release.Namespace }} <configmap>
+  Check MongoDB Replicas Status: kubectl exec -it -n {{ .Release.Namespace }} mongodb-0 -- mongo -u{{ .Values.mongodb.rootUser }} -p{{ .Values.mongodb.rootPassword }} --authenticationDatabase admin --eval 'rs.status()'

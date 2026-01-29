@@ -1,9 +1,8 @@
-# mongodb-script.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mongodb-script
-  namespace: yasin-app
+  namespace: {{ .Release.Namespace }}
 data:
   startup.sh: |
     #!/bin/bash
@@ -21,11 +20,11 @@ data:
 
   check-replicaset.sh: |
     #!/bin/bash
-    
+
     MAX_ATTEMPTS=30
     SLEEP_TIME=5
     REPLICA_SET_NAME=${MONGODB_REPLICA_SET_NAME:-rs0}
-    
+
     wait_for_mongodb() {
       local host=${1}
       local attempt=1
@@ -39,7 +38,7 @@ data:
       done
       return 1
     }
-    
+
     check_replica_set_health() {
       local host=${1}
       local health_status=$(mongo --host ${host} -u${MONGODB_INITIAL_PRIMARY_ROOT_USER} -p${MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD} --quiet --eval "
@@ -48,41 +47,41 @@ data:
           print('REPLICASET_NOT_OK');
           quit(1);
         }
-    
+
         const totalMembers = status.members.length;
         const healthyMembers = status.members.filter(m => m.health === 1).length;
         const primaryMembers = status.members.filter(m => m.stateStr === 'PRIMARY').length;
         const secondaryMembers = status.members.filter(m => m.stateStr === 'SECONDARY').length;
-    
+
         print('TOTAL:' + totalMembers);
         print('HEALTHY:' + healthyMembers);
         print('PRIMARY:' + primaryMembers);
         print('SECONDARY:' + secondaryMembers);
-    
+
         if (healthyMembers < Math.ceil(totalMembers - 1) / 2 + 1) {
          print('NOT_ENOUGH_HEALTHY_MEMBERS');
          quit(1);
         }
-    
+
         print('REPLICASET_HEALTHY');
       " 2>/dev/null)
-    
+
       echo "${health_status}"
       return 0
     }
-    
+
     echo "Start checking MongoDB replica set health status"
     for i in $(seq 0 $((REPLICAS_COUNT-1))); do
       host="mongodb-${i}.mongodb-headless:27017"
       if wait_for_mongodb "${host}"; then
         echo "Connect to ${host}"
         echo "Check replica set status..."
-    
+
         health_output=$(check_replica_set_health "${host}")
-    
+
         if echo "${health_output}" | grep -q "REPLICASET_HEALTHY"; then
           echo "✓ MongoDB replica set health"
-    
+
           echo "${health_output}" | grep -E "^(TOTAL|HEALTHY|PRIMARY|SECONDARY):"
           exit 0
         else
@@ -91,6 +90,6 @@ data:
         fi
       fi
     done
-    
+
     echo "✗ Unable to connect to healthy MongoDB replica set"
     exit 1
