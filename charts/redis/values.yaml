@@ -1,23 +1,11 @@
 mode: product
 replicaCount: 1
 image:
+  repository: bitnami/redis
+  tag: "6.2"
   pullPolicy: IfNotPresent
 service:
-  nodePort: 30379
-  externalTrafficPolicy: Local
-env:
-  - name: TZ
-    value: Asia/Shanghai
-volumeMounts:
-  - name: timezone
-    mountPath: /etc/localtime
-    readOnly: true
-volumes:
-  - name: timezone
-    hostPath:
-      path: /usr/share/zoneinfo/Asia/Shanghai
 redis:
   nodeName:
-  image: bitnami/redis
-  tag: "6.2"
+  nodePort: 30379
   password:
