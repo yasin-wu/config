@@ -15,13 +15,13 @@ spec:
       labels:
         app: registry
     spec:
-      {{- if .Values.deployNode }}
-      nodeName: {{ .Values.deployNode }}
+      {{- if .Values.registry.nodeName }}
+      nodeName: {{ .Values.registry.nodeName }}
       {{- end }}
       containers:
         - name: registry
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.registry.image }}:{{ .Values.registry.tag }}"
           env:
             - name: TZ
               value: Asia/Shanghai

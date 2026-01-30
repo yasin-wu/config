@@ -1,11 +1,10 @@
 mode: product
 replicaCount: 1
-deployNode: master
 image:
+  repository: docker.io/registry
+  tag: "latest"
   pullPolicy: IfNotPresent
 storage:
   pvcName: yasin-cloud
 registry:
-  nodeName:
-  image: docker.io/registry
-  tag: "latest"
+  nodeName: master
