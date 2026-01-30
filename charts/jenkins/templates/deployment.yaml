@@ -26,16 +26,16 @@ spec:
       {{- end }}
       initContainers:
         - name: fix-ssh-permissions
-          image: {{ .Values.busybox.image }}:{{ .Values.busybox.tag }}
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.busybox.repository }}:{{ .Values.busybox.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: [ 'sh', '-c', 'chmod 600 /var/jenkins_home/.ssh/id_ed25519' ]
           volumeMounts:
             - name: jenkins-data
               mountPath: /var/jenkins_home
       containers:
         - name: jenkins
-          image: {{ .Values.jenkins.image }}:{{ .Values.jenkins.tag }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          image: {{ .Values.jenkins.repository }}:{{ .Values.jenkins.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: TZ
               value: Asia/Shanghai

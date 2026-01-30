@@ -1,10 +1,11 @@
-imagePullPolicy: IfNotPresent
+image:
+  pullPolicy: IfNotPresent
 localPath: /home/yasin/data/jenkins/
 busybox:
-  image: busybox
+  repository: busybox
   tag: latest
 jenkins:
-  image: yasin/jenkins
+  repository: yasin/jenkins
   tag: tls
   httpNodePort: 30000
 hostAliases:
