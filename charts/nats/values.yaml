@@ -1,22 +1,9 @@
 mode: product
 replicaCount: 1
 image:
+  repository: nats
+  tag: "2.8.4-alpine"
   pullPolicy: IfNotPresent
-service:
-  nodePort: 30422
-  externalTrafficPolicy: Local
-env:
-  - name: TZ
-    value: Asia/Shanghai
-volumeMounts:
-  - name: timezone
-    mountPath: /etc/localtime
-    readOnly: true
-volumes:
-  - name: timezone
-    hostPath:
-      path: /usr/share/zoneinfo/Asia/Shanghai
 nats:
   nodeName:
-  image: nats
-  tag: "2.8.4-alpine"
+  nodePort: 30422

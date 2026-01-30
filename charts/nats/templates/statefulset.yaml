@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: nats
   namespace: {{ .Release.Namespace }}
@@ -20,17 +20,22 @@ spec:
       {{- end }}
       containers:
         - name: nats
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          image: "{{ .Values.nats.image }}:{{ .Values.nats.tag }}"
           env:
-            {{- include "common.env" . }}
+            - name: TZ
+              value: Asia/Shanghai
           volumeMounts:
-            {{- include "common.volumeMounts" . }}
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
             - name: config
               mountPath: /etc/nats/nats-server.conf
               subPath: nats-server.conf
       volumes:
-        {{- include "common.volumes" . }}
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
         - name: config
           configMap:
             name: nats-config
