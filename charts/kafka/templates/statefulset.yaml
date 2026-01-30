@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: kafka
   namespace: {{ .Release.Namespace }}
@@ -17,10 +17,11 @@ spec:
     spec:
       containers:
         - name: kafka
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          image: "{{ .Values.kafka.image }}:{{ .Values.kafka.tag }}"
           env:
-            {{- include "common.env" . }}
+            - name: TZ
+              value: Asia/Shanghai
             - name: ALLOW_PLAINTEXT_LISTENER
               value: 'yes'
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
@@ -28,9 +29,13 @@ spec:
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
               value: {{ .Values.kafka.cfgAdvertisedListeners }}
           volumeMounts:
-            {{- include "common.volumeMounts" . }}
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
 {{/*            - name: data*/}}
 {{/*              mountPath: /bitnami/kafka/data/*/}}
 {{/*              subPath: kafka/data/*/}}
       volumes:
-        {{- include "common.volumes" . }}
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai

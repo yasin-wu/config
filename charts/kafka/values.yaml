@@ -1,23 +1,10 @@
 mode: product
 replicaCount: 1
 image:
+  repository: bitnami/kafka
+  tag: "3.5.0"
   pullPolicy: IfNotPresent
-service:
-  nodePort: 30992
-  externalTrafficPolicy: Local
-env:
-  - name: TZ
-    value: Asia/Shanghai
-volumeMounts:
-  - name: timezone
-    mountPath: /etc/localtime
-    readOnly: true
-volumes:
-  - name: timezone
-    hostPath:
-      path: /usr/share/zoneinfo/Asia/Shanghai
 kafka:
   nodeName:
-  image: bitnami/kafka
-  tag: "3.5.0"
+  nodePort: 30992
   cfgAdvertisedListeners: PLAINTEXT://10.10.101.10:30992

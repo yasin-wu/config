@@ -14,6 +14,6 @@ spec:
       port: 9092
       targetPort: 9092
   {{- if eq .Values.mode "dev" }}
-      nodePort: {{ .Values.service.nodePort }}
+      nodePort: {{ .Values.kafka.nodePort }}
   type: NodePort
   {{- end }}
