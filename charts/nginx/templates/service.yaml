@@ -13,15 +13,15 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 8443
-      nodePort: {{ .Values.service.httpsNodePort }}
+      nodePort: {{ .Values.nginx.httpsNodePort }}
     - name: http
       protocol: TCP
       port: 80
       targetPort: 8080
-      nodePort: {{ .Values.service.httpNodePort }}
+      nodePort: {{ .Values.nginx.httpNodePort }}
   type: NodePort
-  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
-  {{- if eq .Values.service.ipv6 "enable" }}
+  externalTrafficPolicy: local
+  {{- if eq .Values.nginx.ipv6 "enable" }}
   ipFamilyPolicy: PreferDualStack
   ipFamilies:
     - IPv4

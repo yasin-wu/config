@@ -5,7 +5,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: nginx
-    component: nginx
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -15,19 +14,21 @@ spec:
     metadata:
       labels:
         app: nginx
-        component: nginx
     spec:
       {{- if .Values.nginx.nodeName }}
       nodeName: {{ .Values.nginx.nodeName }}
       {{- end }}
       containers:
         - name: nginx
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          image: "{{ .Values.nginx.image }}:{{ .Values.nginx.tag }}"
           env:
-            {{- include "common.env" . }}
+            - name: TZ
+              value: Asia/Shanghai
           volumeMounts:
-            {{- include "common.volumeMounts" . }}
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
 {{/*            {{- include "webRoot.volumeMounts" . }}*/}}
             - name: config
               mountPath: /opt/bitnami/nginx/conf/nginx.conf
@@ -37,7 +38,9 @@ spec:
             - name: nginx-ca
               mountPath: /home/yasin/nginx/ca/
       volumes:
-        {{- include "common.volumes" . }}
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
 {{/*        {{- include "webRoot.volumes" . }}*/}}
         - name: config
           configMap:

@@ -1,11 +1,11 @@
 Successfully installed {{ .Release.Name }} {{ .Chart.AppVersion }}.
 
-http:  http://127.0.0.1:{{ .Values.service.httpNodePort }}
-https: https://127.0.0.1:{{ .Values.service.httpsNodePort }}
+http:  http://127.0.0.1:{{ .Values.nginx.httpNodePort }}
+https: https://127.0.0.1:{{ .Values.nginx.httpsNodePort }}
 
 Check the status by running: kubectl get pod -n {{ .Release.Namespace }}
-Check the HTTP status by running: curl -k http://127.0.0.1:{{ .Values.service.httpNodePort }}
-Check the HTTPS status by running: curl -k https://127.0.0.1:{{ .Values.service.httpsNodePort }}
+Check the HTTP status by running: curl -k http://127.0.0.1:{{ .Values.nginx.httpNodePort }}
+Check the HTTPS status by running: curl -k https://127.0.0.1:{{ .Values.nginx.httpsNodePort }}
 
 Command '<>' Replace with the actual value:
   List Deployments: kubectl get deploy -n {{ .Release.Namespace }}

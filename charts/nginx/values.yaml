@@ -2,24 +2,9 @@ mode: product
 replicaCount: 1
 crbUser: yasin-user
 image:
+  repository: bitnami/nginx
+  tag: "1.25.4"
   pullPolicy: IfNotPresent
-service:
-  # ipv6: enable, disable
-  ipv6: disable
-  httpsNodePort: 30443
-  httpNodePort: 30080
-  externalTrafficPolicy: Local
-env:
-  - name: TZ
-    value: Asia/Shanghai
-volumeMounts:
-  - name: timezone
-    mountPath: /etc/localtime
-    readOnly: true
-volumes:
-  - name: timezone
-    hostPath:
-      path: /usr/share/zoneinfo/Asia/Shanghai
 webRoot:
   volumeMounts:
     - name: web-root
@@ -30,5 +15,6 @@ webRoot:
         path: /home/yasin/data/web-root/
 nginx:
   nodeName:
-  image: bitnami/nginx
-  tag: "1.25.4"
+  ipv6: disable
+  httpsNodePort: 30443
+  httpNodePort: 30080
