@@ -4,7 +4,6 @@ image:
   repository: bitnami/redis
   tag: "6.2"
   pullPolicy: IfNotPresent
-service:
 redis:
   nodeName:
   nodePort: 30379
