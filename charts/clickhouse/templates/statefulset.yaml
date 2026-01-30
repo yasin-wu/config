@@ -1,15 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: clickhouse
   namespace: {{ .Release.Namespace }}
   labels:
     app: clickhouse
-    component: database
 spec:
   replicas: {{ .Values.replicaCount }}
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app: clickhouse
@@ -17,15 +14,14 @@ spec:
     metadata:
       labels:
         app: clickhouse
-        component: database
     spec:
       {{- if .Values.clickhouse.nodeName }}
       nodeName: {{ .Values.clickhouse.nodeName }}
       {{- end }}
       containers:
         - name: clickhouse
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          image: "{{ .Values.clickhouse.image }}:{{ .Values.clickhouse.tag }}"
           livenessProbe:
             httpGet:
               path: /ping
@@ -49,7 +45,8 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
           env:
-            {{- include "common.env" . }}
+            - name: TZ
+              value: Asia/Shanghai
             - name: CLICKHOUSE_ADMIN_USER
               value: {{ .Values.clickhouse.user }}
             - name: CLICKHOUSE_ADMIN_PASSWORD
@@ -57,14 +54,18 @@ spec:
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
           volumeMounts:
-            {{- include "common.volumeMounts" . }}
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
             - name: config
               mountPath: /bitnami/clickhouse/etc
 {{/*            - name: data*/}}
 {{/*              mountPath: /bitnami/clickhouse/data/*/}}
 {{/*              subPath: clickhouse/data/*/}}
       volumes:
-        {{- include "common.volumes" . }}
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
         - name: config
           configMap:
             name: clickhouse-config

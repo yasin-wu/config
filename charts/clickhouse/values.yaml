@@ -1,25 +1,12 @@
 mode: product
 replicaCount: 1
 image:
+  repository: bitnami/clickhouse
+  tag: "22.8.8"
   pullPolicy: IfNotPresent
-service:
-  httpNodePort: 30123
-  tcpNodePort: 30900
-  externalTrafficPolicy: Local
-env:
-  - name: TZ
-    value: Asia/Shanghai
-volumeMounts:
-  - name: timezone
-    mountPath: /etc/localtime
-    readOnly: true
-volumes:
-  - name: timezone
-    hostPath:
-      path: /usr/share/zoneinfo/Asia/Shanghai
 clickhouse:
   nodeName:
-  image: bitnami/clickhouse
-  tag: "22.8.8"
+  httpNodePort: 30123
+  tcpNodePort: 30900
   user: default
   password: yasin3467

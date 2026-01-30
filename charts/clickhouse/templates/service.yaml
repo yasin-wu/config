@@ -14,13 +14,13 @@ spec:
       port: 8123
       targetPort: 8123
     {{- if eq .Values.mode "dev" }}
-      nodePort: {{ .Values.service.httpNodePort }}
+      nodePort: {{ .Values.clickhouse.httpNodePort }}
     {{- end }}
     - name: tcp
       protocol: TCP
       port: 9000
       targetPort: 9000
   {{- if eq .Values.mode "dev" }}
-      nodePort: {{ .Values.service.tcpNodePort }}
+      nodePort: {{ .Values.clickhouse.tcpNodePort }}
   type: NodePort
   {{- end }}
