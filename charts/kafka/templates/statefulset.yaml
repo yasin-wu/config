@@ -15,6 +15,7 @@ spec:
       labels:
         app: kafka
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
         - name: kafka
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

@@ -18,6 +18,7 @@ spec:
       {{- if .Values.redis.nodeName }}
       nodeName: {{ .Values.redis.nodeName }}
       {{- end }}
+      terminationGracePeriodSeconds: 30
       containers:
         - name: redis
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

@@ -18,6 +18,7 @@ spec:
       {{- if .Values.nats.nodeName }}
       nodeName: {{ .Values.nats.nodeName }}
       {{- end }}
+      terminationGracePeriodSeconds: 30
       containers:
         - name: nats
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
