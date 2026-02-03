@@ -16,6 +16,18 @@ spec:
         app: mongodb
     spec:
       terminationGracePeriodSeconds: 30
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - mongodb
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: mongodb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
