@@ -1,5 +1,5 @@
 apiVersion: v2
-name: Kafka
+name: kafka
 description: A Kafka chart for Kubernetes
 type: application
 version: 1.0.0
