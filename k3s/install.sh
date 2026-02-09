@@ -276,7 +276,7 @@ rejoinClusterMain() {
   fi
   if systemctl list-unit-files --type=service | grep -w 'k3s.service'; then
     colorLog "INFO" "开始清理节点残留信息"
-    read -r -p $'\e[31m请确认是否已经将节点信息从集群中删除,确定继续计入?[y/n]\e[0m' select
+    read -r -p $'\e[31m请确认是否已经将旧节点信息从集群中删除,确定继续计入?[y/n]\e[0m' select
     if [ "${select}" == "y" ]; then
       sh /usr/local/bin/k3s-uninstall.sh
     fi
