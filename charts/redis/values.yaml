@@ -7,4 +7,5 @@ image:
 redis:
   nodeName:
   nodePort: 30379
-  password:
+  port: 6379
+  password: Yasin_3467

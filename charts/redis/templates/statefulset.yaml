@@ -46,10 +46,21 @@ spec:
           env:
             - name: TZ
               value: Asia/Shanghai
-            {{- if .Values.redis.password }}
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: REDIS_PASSWORD
-              value: {{ .Values.redis.password }}
-            {{- end }}
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: password
+            - name: REDIS_PORT_NUMBER
+              value: "{{ .Values.redis.port | default "6379" }}"
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
             - name: REDIS_AOF_ENABLED
