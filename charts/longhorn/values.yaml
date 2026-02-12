@@ -185,7 +185,8 @@ persistence:
   # -- Setting that disables the revision counter and thereby prevents Longhorn from tracking all write operations to a volume. When salvaging a volume, Longhorn uses properties of the volume-head-xxx.img file (the last file size and the last time the file was modified) to select the replica to be used for volume recovery.
   disableRevisionCounter: "true"
   # -- Set NFS mount options for Longhorn StorageClass for RWX volumes
-  nfsOptions: "vers=4.2,noresvport,soft,timeo=600,retrans=5"
+  #nfsOptions: "vers=4.2,noresvport,soft,timeo=600,retrans=5"
+  nfsOptions: ""
   recurringJobSelector:
     # -- Setting that allows you to enable the recurring job selector for a Longhorn StorageClass.
     enable: false

@@ -27,6 +27,21 @@ spec:
                       values:
                         - mongodb
                 topologyKey: kubernetes.io/hostname
+      {{- if and .Release.IsInstall }}
+      initContainers:
+        - name: chown-dir
+          image: "rancher/mirrored-library-busybox:1.36.1"
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/sh" ]
+          args:
+            - -c
+            - |
+              mkdir -p /home/yasin/bitnami/mongodb/data/
+              [ "$(stat -c %u:%g /home/yasin/bitnami/mongodb/data/)" = "1001:1001" ] || chown -R 1001:1001 /home/yasin/bitnami/mongodb/data/ 2>/dev/null
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /home/yasin/bitnami/
+     {{- end }}
       containers:
         - name: mongodb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -92,6 +107,7 @@ spec:
               readOnly: true
             - name: mongodb-data
               mountPath: /bitnami/mongodb/data/
+              subPath: mongodb/data/
             - name: startup
               mountPath: /opt/bitnami/scripts/mongodb/custom/startup.sh
               subPath: startup.sh
