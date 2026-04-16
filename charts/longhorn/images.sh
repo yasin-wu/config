@@ -1,11 +1,11 @@
 #!/bin/bash
 
 colorLog() {
-  local RED='\033[0;31m'
-  local GREEN='\033[0;32m'
-  local YELLOW='\033[0;33m'
-  local BLUE='\033[0;34m'
-  local NC='\033[0m' # No Color
+  RESET=$(tput sgr0)      # 重置所有样式
+  RED=$(tput setaf 1)     # 设置前景色为红色
+  GREEN=$(tput setaf 2)   # 设置前景色为绿色
+  YELLOW=$(tput setaf 3)  # 设置前景色为黄色
+  BLUE=$(tput setaf 4)    # 设置前景色为蓝色
   local level=${1}
   local message=${2}
   case ${level} in
@@ -15,7 +15,7 @@ colorLog() {
   "ERROR") color=${RED} ;;
   *) color=${NC} ;;
   esac
-  printf "${GREEN}[%s] [${color}%-7s${GREEN}] %s${NC}\n" "$(date "+%Y-%m-%d %H:%M:%S")" "${level}" "${message}"
+  printf '%b\n' "${GREEN}[$(date "+%Y-%m-%d %H:%M:%S")] [${color}${level}${GREEN}] ${message}${RESET}"
   if [ "${level}" == "ERROR" ]; then
     exit 1
   fi
