@@ -42,16 +42,16 @@ validate_cert() {
 
   # 1. 检查文件是否存在且非空
   if [ ! -s "mongodb.pem" ]; then
-      echo "❌ 错误：mongodb.pem 文件不存在或为空！" >&2
-      return 1
+    echo "❌ 错误：mongodb.pem 文件不存在或为空！" >&2
+    return 1
   fi
 
   # 2. 检查私钥与证书的模数是否匹配（确保是一对）
   KEY_MOD=$(openssl rsa -noout -modulus -in mongodb.pem 2>/dev/null | openssl md5)
   CRT_MOD=$(openssl x509 -noout -modulus -in mongodb.pem 2>/dev/null | openssl md5)
   if [ -z "$KEY_MOD" ] || [ -z "$CRT_MOD" ]; then
-      echo "❌ 错误：无法提取模数，mongodb.pem 内容可能损坏！" >&2
-      return 1
+    echo "❌ 错误：无法提取模数，mongodb.pem 内容可能损坏！" >&2
+    return 1
   fi
   if [ "$KEY_MOD" != "$CRT_MOD" ]; then
     echo "❌ 错误：私钥和证书的模数不匹配（非一对）！" >&2
@@ -166,11 +166,6 @@ openssl genrsa -out mongodb.key 4096
 openssl req -new -key mongodb.key -out mongodb.csr -subj "${SUBJ}"
 
 echo ">>> 正在使用 CA 签署服务端证书..."
-#if [ -n "${SAN}" ]; then
-#  openssl x509 -req -days "${DAYS}" -in mongodb.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out mongodb.crt -addext "subjectAltName=${SAN}"
-#else
-#  openssl x509 -req -days "${DAYS}" -in mongodb.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out mongodb.crt
-#fi
 if [ -n "${SAN}" ]; then
   if "${SUPPORTS_ADDEXT}"; then
     openssl x509 -req -days "${DAYS}" -in mongodb.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out mongodb.crt -addext "subjectAltName=${SAN}"
@@ -187,7 +182,6 @@ else
   # 无 SAN，直接签名
   openssl x509 -req -days "${DAYS}" -in mongodb.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out mongodb.crt
 fi
-
 
 echo ">>> 正在合并私钥和证书到 mongodb.pem..."
 cat mongodb.key mongodb.crt > mongodb.pem
