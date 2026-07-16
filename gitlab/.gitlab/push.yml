@@ -1,14 +1,23 @@
-push:
+.push_base: &push_base
   stage: push
-  only:
-    - main
-    - master
   tags:
     - ${RUNNER}
+
+push-latest:
+  <<: *push_base
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^feature-.*/'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
   script:
-    - sudo docker push yasin/app:${VERSION}
-    - |
-      for value in $(sudo docker images | grep none | awk '{print $3}');
-        do
-          sudo docker rmi -f "$value"
-        done
+    - docker push yasin/${APP}:latest
+    - docker push yasin/${APP}-arm64:latest
+    - docker push yasin/${APP}-sw64:latest
+
+push-version:
+  <<: *push_base
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+  script:
+    - docker push yasin/${APP}:${VERSION}
+    - docker push yasin/${APP}-arm64:${VERSION}
+    - docker push yasin/${APP}-sw64:${VERSION}

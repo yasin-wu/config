@@ -1,11 +1,10 @@
 review_code:
   stage: review_code
-  allow_failure: true
   tags:
     - ${RUNNER}
   script:
     - go mod tidy
-    - golangci-lint run --timeout=10m --out-format=junit-xml > golangci-lint.xml
+    - golangci-lint run --timeout=10m --output.junit-xml.path=golangci-lint.xml
   artifacts:
     reports:
       junit: golangci-lint.xml

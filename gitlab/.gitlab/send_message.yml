@@ -1,8 +1,11 @@
-failure_send:
+.send_message_base: &send_message_base
   stage: send_message
-  when: on_failure
   tags:
     - ${RUNNER}
+
+failure_send:
+  <<: *send_message_base
+  when: on_failure
   script:
     - |
       commit_message=$(echo "${CI_COMMIT_MESSAGE}" | grep -v '^[[:space:]]*$')
@@ -11,7 +14,7 @@ failure_send:
          {
             "msgtype": "markdown",
             "markdown": {
-               "content":"'"**GitLab 通知**：<font color=RED>FAILURE</font>
+               "content":"'"**Gitlab 通知**：<font color=RED>FAILURE</font>
                 >项目: <font color=comment>${CI_PROJECT_URL}</font>
                 >分支: <font color=comment>${CI_COMMIT_BRANCH}</font>
                 >提交者: <font color=comment>${GITLAB_USER_EMAIL}</font>
@@ -21,10 +24,10 @@ failure_send:
             }
         }'
 
-success_send:
-  stage: send_message
-  tags:
-    - ${RUNNER}
+success_send_latest:
+  <<: *send_message_base
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^feature-.*/'
   script:
     - |
       commit_message=$(echo "${CI_COMMIT_MESSAGE}" | grep -v '^[[:space:]]*$')
@@ -33,7 +36,7 @@ success_send:
          {
             "msgtype": "markdown",
             "markdown": {
-               "content":"'"**GitLab 通知**：<font color=GREEN>SUCCESS</font>
+               "content":"'"**Gitlab 通知**：<font color=GREEN>SUCCESS</font>
                 >项目: <font color=comment>${CI_PROJECT_URL}</font>
                 >分支: <font color=comment>${CI_COMMIT_BRANCH}</font>
                 >提交者: <font color=comment>${GITLAB_USER_EMAIL}</font>
@@ -41,7 +44,34 @@ success_send:
                 >commit信息: <font color=comment>${commit_message}</font>
                 >单元测试和lint报告请点击:[报告](${CI_PROJECT_URL}/-/pipelines/${CI_PIPELINE_ID}/test_report)
                 >输出镜像: 
-                      <font color=comment>yasin/app:${VERSION}</font>
-                      <font color=comment>yasin/app:latest</font>"'"
+                      <font color=comment>yasin/${APP}:latest</font>
+                      <font color=comment>yasin/${APP}-arm64:latest</font>"'"
+            }
+        }'
+
+success_send_version:
+  <<: *send_message_base
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+  script:
+    - |
+      commit_message=$(echo "${CI_COMMIT_MESSAGE}" | grep -v '^[[:space:]]*$')
+      curl ${NOTIFICATION} -H 'Content-Type: application/json' \
+         -d '
+         {
+            "msgtype": "markdown",
+            "markdown": {
+               "content":"'"**Gitlab 通知**：<font color=GREEN>SUCCESS</font>
+                >项目: <font color=comment>${CI_PROJECT_URL}</font>
+                >分支: <font color=comment>${CI_COMMIT_BRANCH}</font>
+                >提交者: <font color=comment>${GITLAB_USER_EMAIL}</font>
+                >commit号: <font color=comment>${CI_COMMIT_SHA}</font>
+                >commit信息: <font color=comment>${commit_message}</font>
+                >单元测试和lint报告请点击:[报告](${CI_PROJECT_URL}/-/pipelines/${CI_PIPELINE_ID}/test_report)
+                >输出镜像: 
+                      <font color=comment>yasin/${APP}:${VERSION}</font>
+                      <font color=comment>yasin/${APP}-arm64:${VERSION}</font>
+                      <font color=comment>yasin/${APP}:latest</font>
+                      <font color=comment>yasin/${APP}-arm64:latest</font>"'"
             }
         }'

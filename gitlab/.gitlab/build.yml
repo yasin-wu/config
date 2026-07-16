@@ -1,11 +1,10 @@
 build:
   stage: build
-  only:
-    - main
-    - master
-    - develop
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^feature-.*/'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
   tags:
     - ${RUNNER}
   script:
-    - cd ${CI_PROJECT_DIR}/yasin/build
-    - sh build.sh ${VERSION}
+    - make buildi VERSION=${VERSION} ARCH=amd64
+    - make buildi VERSION=${VERSION} ARCH=arm64

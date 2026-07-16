@@ -3,7 +3,7 @@ unit_test:
   tags:
     - ${RUNNER}
   script:
-    - gotestsum --junitfile unit-test.xml --format standard-quiet -- -gcflags=all=-l -coverprofile=coverage.data -coverpkg=./... ./...
+    - gotestsum --junitfile unit-test.xml --format standard-quiet -- -count=1 -timeout=1200s -gcflags=all=-l -coverprofile=coverage.data -coverpkg=${COVERPKG} ./...
     - go tool cover -func=coverage.data
   coverage: '/total:+\s+\(statements\)+\s+\d+.\d+%/'
   artifacts:

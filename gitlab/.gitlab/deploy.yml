@@ -1,10 +1,9 @@
 deploy:
   stage: deploy
-  only:
-    - main
-    - master
-    - develop
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^feature-.*/'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
   tags:
     - ${RUNNER}
   script:
-    - yasin start
+    - kubectl rollout restart deploy -n yasin ${APP}

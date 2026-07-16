@@ -2,21 +2,22 @@ stages:
   - "review_code"
   - "unit_test"
   - "build"
-  - "deploy"
   - "push"
+  - "deploy"
   - "send_message"
 
-#环境变量
 variables:
-  VERSION: "1.1.0"
+  APP: "yasin"
+  VERSION: "1.0.0"
   RUNNER: "yasin"
-  NOTIFICATION: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=210172d3-95a9-4a78-acf3-92cd657281f7"
+  NOTIFICATION: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=yasin"
+  COVERPKG: "./pkg/...,./rest/internal/...,./rest/api/config/...,./rest/api/logic/...,./rest/api/svc/...,./rpc/internal/..."
+  KUBEREMOTECONFIG: "/home/gitlab-runner/.kube/remote_config"
 
-#文件引入
 include:
   - ".gitlab/review_code.yml"
   - ".gitlab/unit_test.yml"
   - ".gitlab/build.yml"
-  - ".gitlab/deploy.yml"
   - ".gitlab/push.yml"
+  - ".gitlab/deploy.yml"
   - ".gitlab/send_message.yml"
