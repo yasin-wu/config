@@ -14,3 +14,5 @@ mongodb:
   rootPassword: Yasin_3467
   replicaSetName: rs0
   replicaSetKey: replicaKeyYasin
+  # options: `allowTLS`, `preferTLS`, `requireTLS`
+  tlsMode: ""

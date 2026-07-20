@@ -101,6 +101,12 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: replica-set-key
+            {{- if .Values.mongodb.tlsMode }}
+            - name: MONGODB_EXTRA_FLAGS
+              value: "--tlsMode={{ .Values.mongodb.tlsMode }} --tlsCAFile=/certs/ca.pem --tlsCertificateKeyFile=/certs/mongodb.pem"
+            - name: MONGODB_CLIENT_EXTRA_FLAGS
+              value: "--tls --tlsCAFile=/certs/ca.pem --tlsCertificateKeyFile=/certs/mongodb.pem"
+            {{- end }}
           volumeMounts:
             - name: timezone
               mountPath: /etc/localtime
@@ -111,6 +117,10 @@ spec:
             - name: startup
               mountPath: /opt/bitnami/scripts/mongodb/custom/startup.sh
               subPath: startup.sh
+            {{- if .Values.mongodb.tlsMode }}
+            - name: certs
+              mountPath: /certs/
+            {{- end }}
       volumes:
         - name: timezone
           hostPath:
