@@ -40,13 +40,11 @@ validate_cert() {
   echo ""
   echo ">>> 开始校验 mongodb.pem ..."
 
-  # 1. 检查文件是否存在且非空
   if [ ! -s "mongodb.pem" ]; then
     echo "❌ 错误：mongodb.pem 文件不存在或为空！" >&2
     return 1
   fi
 
-  # 2. 检查私钥与证书的模数是否匹配（确保是一对）
   KEY_MOD=$(openssl rsa -noout -modulus -in mongodb.pem 2>/dev/null | openssl md5)
   CRT_MOD=$(openssl x509 -noout -modulus -in mongodb.pem 2>/dev/null | openssl md5)
   if [ -z "$KEY_MOD" ] || [ -z "$CRT_MOD" ]; then
@@ -59,7 +57,6 @@ validate_cert() {
   fi
   echo "✅ 校验通过：私钥与证书匹配"
 
-  # 3. 验证证书是否由 ca.pem 正确签署
   VERIFY_OUT=$(openssl verify -CAfile ca.pem mongodb.pem 2>&1)
   if [[ "$VERIFY_OUT" != *"OK"* ]]; then
     echo "❌ 错误：证书未被 ca.pem 正确签署！详情：$VERIFY_OUT" >&2
@@ -67,14 +64,12 @@ validate_cert() {
   fi
   echo "✅ 校验通过：证书由 CA 正确签署"
 
-  # 4. 检查证书是否过期（检查当前时间是否在有效期内）
   if ! openssl x509 -checkend 0 -noout -in mongodb.pem 2>/dev/null; then
     echo "❌ 错误：证书已过期！" >&2
     return 1
   fi
   echo "✅ 校验通过：证书在有效期内"
 
-  # 5. （可选）显示证书中的 SAN 与 CN，便于人工核对
   echo ""
   echo "📋 证书摘要信息："
   openssl x509 -in mongodb.pem -noout -subject -dates
@@ -86,7 +81,6 @@ validate_cert() {
   return 0
 }
 
-# 解析参数
 OPTS=$(getopt -o s:d:o:I:D:h -l subj:,days:,output-dir:,ip:,domain:,ca-subj:,help -n "${0}" -- "${@}")
 if [ $? -ne 0 ]; then
   echo "错误：参数解析失败。" >&2
@@ -130,18 +124,16 @@ while true; do
   esac
 done
 
-# 检查 openssl
 if ! command -v openssl &>/dev/null; then
   echo "错误：未找到 openssl，请先安装。" >&2
   exit 1
 fi
 
-# 检查 openssl 是否支持 -addext（需 1.1.1+）
 SUPPORTS_ADDEXT=false
 if openssl x509 -req -addext "" -in /dev/null -CA /dev/null -CAkey /dev/null -out /dev/null 2>/dev/null; then
   SUPPORTS_ADDEXT=true
 fi
-# 构建 SAN 字符串
+
 SAN=""
 for domain in "${DOMAINS[@]}"; do
   [ -n "${SAN}" ] && SAN="${SAN},"
@@ -152,7 +144,6 @@ for ip in "${IPS[@]}"; do
   SAN="${SAN}IP:${ip}"
 done
 
-# 创建输出目录
 rm -rf "${OUTPUT_DIR}"
 mkdir -p "${OUTPUT_DIR}"
 cd "${OUTPUT_DIR}"
@@ -170,7 +161,6 @@ if [ -n "${SAN}" ]; then
   if "${SUPPORTS_ADDEXT}"; then
     openssl x509 -req -days "${DAYS}" -in mongodb.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out mongodb.crt -addext "subjectAltName=${SAN}"
   else
-    # 不支持 -addext，使用配置文件方式
     cat > san.cnf <<EOF
 [v3_req]
 subjectAltName = ${SAN}
@@ -179,14 +169,12 @@ EOF
     rm -f san.cnf
   fi
 else
-  # 无 SAN，直接签名
   openssl x509 -req -days "${DAYS}" -in mongodb.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out mongodb.crt
 fi
 
 echo ">>> 正在合并私钥和证书到 mongodb.pem..."
 cat mongodb.key mongodb.crt > mongodb.pem
 
-# 清理临时文件（保留 ca.key）
 rm -f mongodb.csr mongodb.crt ca.srl
 
 if ! validate_cert; then
