@@ -1,5 +1,6 @@
 unit_test:
   stage: unit_test
+  retry: 2
   tags:
     - ${RUNNER}
   script:

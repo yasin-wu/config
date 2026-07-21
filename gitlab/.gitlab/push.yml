@@ -3,19 +3,21 @@
   tags:
     - ${RUNNER}
 
-push-latest:
+push_latest:
   <<: *push_base
   rules:
-    - if: '$CI_COMMIT_BRANCH =~ /^feature-.*/'
     - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH =~ /^feature-.*/'
   script:
     - docker push yasin/${APP}:latest
     - docker push yasin/${APP}-arm64:latest
     - docker push yasin/${APP}-sw64:latest
 
-push-version:
+push_version:
   <<: *push_base
   rules:
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - if: '$CI_COMMIT_BRANCH == "develop"'
   script:
     - docker push yasin/${APP}:${VERSION}
